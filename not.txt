@@ -1,0 +1,33 @@
+plus buton done
+plus buton ile flatlistin ust uste gelmesi done
+react redux ile notları pushlama ve flatliste verme done
+flatlist ile notecard componentini kullanarak notları listeleme done
+mevcut notları yeni bi sayfada goruntuleme done
+mevcut notları reduxa yazılan fonksiyon ile update etme done
+
+
+notları silinmesi (push ve update tamam)
+notları localstorage'a kaydetme 
+notların listelenme biçim değişiklikleri (renk,düzen)
+
+
+  <>
+    <View>
+        <SwipeListView data={note} 
+        style={{height:Dimensions.get('window').height/1.2 /*flatliste height vererek plusbutton'u position:absolute gibi kullanabildik*/}}
+        renderItem={({item}) => <NoteCard message={item} onPress={() => navigateToNote(item.note, item.id)} />}
+        renderHiddenItem={ (data, rowMap) => (
+          <View style={styles.rowBack}>
+              <Text>Left</Text>
+              <Text>Right</Text>
+          </View>
+      )} 
+      leftOpenValue={75}
+      rightOpenValue={-75}
+      />
+        
+        <PlusButton icon={'plus'} onPress={navigateToWriter} />
+
+      </View>
+
+      </>
