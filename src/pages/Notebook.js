@@ -26,142 +26,8 @@ function Notes({navigation}) {
   const note = useSelector((state)=> state.counter.notes)
   const dispatch = useDispatch()
 
-
-
-
-  /*useEffect(() => {
-    const setItemsToStorage = async ()  => {
-      try {
-        await AsyncStorage.setItem('notes', JSON.stringify(note));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    
-    const getDataFromStorage = async () => {
-      const datas = await JSON.parse(await AsyncStorage.getItem('notes'))
-      return datas
-    }
-
-    const fetchData = async() => {
-       const dataFromStorage = await getDataFromStorage()
-       setData(dataFromStorage)
-       console.log(data)
-    }
-
-     setItemsToStorage().then(fetchData)
-
-  }, [note]); */
-
-
   
-
   const [data,setData] = useState([])
-
-  function getUnique(arr, comp) {
-    const unique = arr
-       .map(e => e[comp])
-       // Store the keys of the unique objects
-       .map((e, i, final) => final.indexOf(e) === i && i)
-       // Eliminate the dead keys & store unique objects
-       .filter(e => arr[e]).map(e => arr[e]);
-   return unique;
-  }
-
-
-  /* useEffect(() => {  //1 ve 2
-    async function getNotes() {
-      const existingNotes = await JSON.parse(await AsyncStorage.getItem('notes')) || []; // mevcut verileri alın
-      const updatedNotes = [...existingNotes, ...note];  // updatedNotes  [{"id": 7401, "note": "1"}, {"id": 36804, "note": "2"}, {"id": 40496, "note": "3"}, {"id": 7401, "note": "1"}, {"id": 36804, "note": "2"}, {"id": 40496, "note": "3"}, {"id": 96853, "note": "4"}]
-      const uniqueData = getUnique(updatedNotes, "id");   //unique [{"id": 7401, "note": "1"}, {"id": 36804, "note": "2"}, {"id": 40496, "note": "3"}, {"id": 96853, "note": "4"}]
-      setData(uniqueData);
-      await AsyncStorage.setItem('notes', JSON.stringify(uniqueData));
-      
-
-      console.log('...note: ', ...note,
-                    'existingNotes ', existingNotes,
-                    'updatedNotes ', updatedNotes,
-                    'uniqueData ', uniqueData)
-
-
-        
-      }
-    
-    getNotes();
-  }, [note]);   */
-
-  useEffect(() => {
-    async function getNotes() {
-      const existingNotes = await JSON.parse(await AsyncStorage.getItem('notes')) || [];
-  
-      let updatedNotes;
-      const noteIndex = existingNotes.findIndex(n => n.id === note.id);
-  
-      if (noteIndex === -1) {
-        updatedNotes = [...existingNotes, note];
-      } else {
-        updatedNotes = [
-          ...existingNotes.slice(0, noteIndex),
-          note,
-          ...existingNotes.slice(noteIndex + 1)
-        ];
-      }
-  
-      const uniqueData = updatedNotes.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
-  
-      setData(uniqueData);
-      await AsyncStorage.setItem('notes', JSON.stringify(uniqueData));
-  
-      console.log('...note: ', ...note,
-                  'existingNotes ', existingNotes,
-                  'updatedNotes ', updatedNotes,
-                  'uniqueData ', uniqueData);
-    }
-  
-    getNotes();
-  }, [note]);
-
-
-  
-  /*useEffect(()=> {
-    const getLocalStorageData = async () => {
-   
-      const datas = await JSON.parse(await AsyncStorage.getItem('notes'))
-      setData(datas)
-    }
-
-    getLocalStorageData()
-
-  },[note]) */
-
-
-  /*useEffect(()=> {
-    const clearAsyncStorage = async () => {
-      try {
-        await AsyncStorage.clear();
-        console.log('AsyncStorage successfully cleared!');
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    clearAsyncStorage()
-  },[]) /*
-
-
-/*useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const newData = await JSON.parse(await AsyncStorage.getItem('notes'));
-      setData(newData);
-    
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  fetchData();
-}, [note]); */
-
-
   
 
   
@@ -186,14 +52,12 @@ function Notes({navigation}) {
  }
 
 
- 
-
   
 
 
   return (
     <>
-    <View>
+    <View style={{}}>
         <SwipeListView   data={note}   //local storage'a göre değil
  
         style={{height:Dimensions.get('window').height/1.2, padding:10 /*flatliste height vererek plusbutton'u position:absolute gibi kullanabildik*/}}

@@ -31,3 +31,94 @@ notların listelenme biçim değişiklikleri (renk,düzen)
       </View>
 
       </>
+
+
+
+      //video
+      --------------------------------
+      *colorları dosyadan alma = color.js diye dosyanın içine export default {DARK: '#232323' , PRIMARY: '#1f1f1f' , ERROR:...} vs yazıp style'ların içinde color=colors.PRIMARY
+     --------------------------------
+      *StatusBar = telefonun üstündeki saat şarj vs kısımla ilgili işlemler = StatusBar componenti
+      --------------------------------
+      *prop'a default değer => mesela bir componente (ör: vectorIcons'dan bir Icon) oluştururken <Icon size={size || 24} color={color || colors.DARK} />
+      --------------------------------
+      *f2 = toplu variable name'ini değiştirme, toplu aynı kelimeleri seçip aynı değişikleri (taşıma vs) yapma = ctrl + d
+      --------------------------------
+      *saate göre günaydın iyi akşamlar yazdırabilme = new Date().getHours()    =>>> 21 17 06 vs dondurur günaydın iyi akşamlar mesajı böyle halledilir
+      --------------------------------
+      * componente style verme ve çağırıldığı yerdende ekstra stil ekleyebilme:
+
+      const roundIconBtn = ({name,size,color,style}) => {
+        return (
+          size = {size || 24}
+          ....
+          style = { [ style.icon, {...style} ] }
+        )
+      }
+
+      const styles = StyleSheet.create({
+        icon: {
+          ........
+        }
+      })
+      --------------------------------
+      * StyleSheet.absoluteFillObject => bunu bir style içine vermemiz o comp'un tam olarak ortalamnmasını sağlar diğer parent compları yok sayarak (pos:abs,top,left,bottom=0)
+          kullanımı ise: <View style={[StyleSheet.absoluteFillObject , styles.headerContainer]} (video2 15.30)
+      --------------------------------
+      *Klavye dışına tıklanınca kapanma muabbeti = Not yazarken boş kısma tıkladığında klavyenin kapanmasını istiyordu bu yüzden en alta toucahblewithoutfeedback i çağırıp içine view verdi 
+          verdiği View'in style özelliklerine Styles.absoluteFillObject ve flex:1 verdi tüm ekranı kapaması için ve onPress'ine de Keyboard.dismiss() fonk'u çağırdı
+      --------------------------------
+      * (bu modal olduğu için olabilir) başka state'i prop olarak başka yerden alma = custom component'de (modal) onSubmit propunda o component'in state değerlerini gonderdi onSubmit(title,desc) ile ve modalı cagırdı comp'da (noteScreen) 
+           o comp'u çağırdığında title ve desc'e erişebildi.      <Modal onSubmit={handleSubmit} ....  function handleSubmit(title,desc) {console.log(title , desc)}   (3.video sonları)
+      --------------------------------
+      *title.trim() = normalde textInput da title state'i boş mu diye kontrol ederken if(!title) gibi kullanılır. ama sadece boşluk bırakılırsa string var sanır
+         bunu engellemek için if(!title.trim()) kullanılabilir
+      --------------------------------
+      * uzun textlerde .... eklemek  =>      <Text numberOfLines ={2}> {text} </Text>    text iki satırı geçerse .... yazar
+      --------------------------------
+      * flatlistleri sütun mantığı verebilmek =  <Flatlist ... numColumns = {2} .. />  iki satıra böle böle yazdı
+           ve numColumns > 1 ise  columnWrapperStyle verilebilir ={{justifyContent:'space-between'}}    ( 4 / 14.54)
+      --------------------------------
+      *  notları asyncStorage kaydetme mantığı: 
+      NoteInputModal componenti title ve desc'i onSubmit propundan gönderdi ve NoteScreen içinden bu comp cagırıldı 
+      ve text,desc değerleri NoteInputModal'dan handleOnSubmit metodu ile elde edildi
+
+        const [notes,setNotes] = useState([])
+
+        const findNotes = async () => {
+          const result = await AsyncStorage.getItem('notes')
+          if(result !== null) setNotes(JSON.parse(notes))
+        }
+
+        useEffect(() => {
+          findNotes()
+        }, [])
+       
+        const handleOnSubmit = async (title, desc) => {
+            const note = { id: Date.now(), title, desc, time: Date.now() };
+            const updatedNotes = [...notes, note];
+            setNotes(updatedNotes);
+            await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
+         };
+
+         return (
+          ....
+            <NoteInputModal 
+            visible={modalIsVisible} 
+            onClose{()=> setModalVisible(false)}
+            onSubmit={handleOnSubmit}
+         )
+
+
+         burada yapılan şey:
+         1- yazılan son notu handleOnSubmit ile alıyoruz
+         2- handleOnSubmit içinde const updatedNotes updatedNotes = [...notes, note] diyerek eski notları da alıp sonuncuyu ekliyoruz
+         3- updatesNote'u notes state'inin son hali yapıyoruz
+         4- updatesNote'u asyncStorage ile set ediyoruz
+         5- useEffect içinde findNotes'u çağırıyoruz
+         6- findNotes AsyncStorage ile get yapıp notes i alıyor ve setNotes() ile state'i güncelliyor
+         7- notes state'ini flatlist ile kullanıyoruz
+
+
+
+                

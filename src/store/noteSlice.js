@@ -6,6 +6,7 @@ export const noteSlice = createSlice({
   initialState: {
     value: 0,
     notes: [],
+    localNotes: [],
   },
   reducers: {
     increment: (state) => {
@@ -40,15 +41,13 @@ export const noteSlice = createSlice({
 })
 
 
-function getUnique(arr, comp) {
-  const unique = arr
-     .map(e => e[comp])
-     // Store the keys of the unique objects
-     .map((e, i, final) => final.indexOf(e) === i && i)
-     // Eliminate the dead keys & store unique objects
-     .filter(e => arr[e]).map(e => arr[e]);
- return unique;
+const saveNote =  async () => {
+  notess = await JSON.parse(await AsyncStorage.getItem('notes'))
+  await AsyncStorage.setItem('notes', JSON.stringify(notess)); 
 }
+
+
+
 
 const saveNotesToAsyncStorage = async (notes) => {
  /* const existingNotes = await JSON.parse(await AsyncStorage.getItem('notes')) || []; // mevcut verileri alın
