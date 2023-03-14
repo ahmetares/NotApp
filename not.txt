@@ -35,6 +35,7 @@ notların listelenme biçim değişiklikleri (renk,düzen)
 
 
       //video
+      https://www.youtube.com/watch?v=oEc6ndf8MXg&list=PLaAoUJDWH9WonhD-ZLyYber1O7LnoI62w&index=1&ab_channel=FullStackNiraj
       --------------------------------
       *colorları dosyadan alma = color.js diye dosyanın içine export default {DARK: '#232323' , PRIMARY: '#1f1f1f' , ERROR:...} vs yazıp style'ların içinde color=colors.PRIMARY
      --------------------------------
