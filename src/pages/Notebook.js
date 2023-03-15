@@ -15,22 +15,17 @@ import NoteCard from '../components/NoteCard';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { deleteNote, setItems } from '../store/noteSlice';
 import Icon from 'react-native-vector-icons/AntDesign' // ekstra npm i --save-dev @types/react-native-vector-icons  yapınca calıstı ayrıca bu paket için android ve iosda konfig. yapılmalı
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setItemsToStorage } from '../utils/AsyncStorage';
+
 
 
 
 
 function Notes({navigation}) {
 
-  const note = useSelector((state)=> state.counter.notes)
+  const note = useSelector((state)=> state.notes.notes)
   const dispatch = useDispatch()
 
-  
-  const [data,setData] = useState([])
-  
 
-  
  const navigateToWriter = () => { navigation.navigate('Notlar') }
  const navigateToNote = (note,id) => {
   navigation.navigate('Not',{note,id})
@@ -58,7 +53,7 @@ function Notes({navigation}) {
   return (
     <>
     <View style={{}}>
-        <SwipeListView   data={note}   //local storage'a göre değil
+        <SwipeListView   data={note}  //redux'taki note state'ini listele  (bu state aynı zamanda redux-persist ile localStorage ile senktronize)
  
         style={{height:Dimensions.get('window').height/1.2, padding:10 /*flatliste height vererek plusbutton'u position:absolute gibi kullanabildik*/}}
         renderItem={({item}) => <NoteCard message={item} onPress={() => navigateToNote(item.note, item.id)} />}

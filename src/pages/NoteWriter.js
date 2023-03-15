@@ -7,7 +7,8 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   ScrollView,
-  Alert
+  Alert,
+  Modal
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { decrement, increment,addNote } from '../store/noteSlice'
@@ -18,10 +19,10 @@ const deviceSize = Dimensions.get('window')
 function NoteWriter({navigation}) {
 
   const [text,setText] = useState('')
-    const count = useSelector((state) => state.counter.value)  //burası counter'i değiştirince bozuluyor
-    const notes = useSelector((state) => state.counter.notes)
+  
+  const notes = useSelector((state) => state.notes.notes)
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
 
   function handleNote() {
@@ -36,10 +37,7 @@ function NoteWriter({navigation}) {
     })
     )
     navigation.navigate('Not Defteri')
-  }    //en son kaldıgın yer:
-  //her kaydete tıkladıgında yeniden render ediliyo bu yüzden yeni bir note kaydediyo farklı id ile
-  //eğer içinde yazı varsa o update edilmeli eğer 0 dan açılmışssa yeni bir note olarak pushlanmalı
-  //navigate edip çözdük butondan gelirse falan
+  }   
 
 
 

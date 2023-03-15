@@ -16,7 +16,7 @@ function Note ({route,navigation}) {
     const id = route.params.id
 
     const dispatch = useDispatch()
-    const notes = useSelector((state) => state.counter.notes)
+    const notes = useSelector((state) => state.notes.notes)
 
     useEffect(()=> { //sayfa ilk render edildiğinde mevcut note'u text'e set ettik
         setText(note)
