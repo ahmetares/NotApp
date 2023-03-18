@@ -42,7 +42,7 @@ notların listelenme biçim değişiklikleri (renk,düzen)
       --------------------------------
       *prop'a default değer => mesela bir componente (ör: vectorIcons'dan bir Icon) oluştururken <Icon size={size || 24} color={color || colors.DARK} />
       --------------------------------
-      *f2 = toplu variable name'ini değiştirme, toplu aynı kelimeleri seçip aynı değişikleri (taşıma vs) yapma = ctrl + d
+      *f2 = toplu variable name'ini değiştirme, toplu aynı kelimeleri seçip aynı değişikleri (taşıma,silme ekleme vs) yapma = ctrl + d
       --------------------------------
       *saate göre günaydın iyi akşamlar yazdırabilme = new Date().getHours()    =>>> 21 17 06 vs dondurur günaydın iyi akşamlar mesajı böyle halledilir
       --------------------------------
@@ -52,7 +52,7 @@ notların listelenme biçim değişiklikleri (renk,düzen)
         return (
           size = {size || 24}
           ....
-          style = { [ style.icon, {...style} ] }
+          style = { [ styles.icon, {...style} ] }
         )
       }
 
