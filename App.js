@@ -27,11 +27,14 @@ import { Provider } from 'react-redux'
 
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
+import FlashMessage from "react-native-flash-message";
 
 function App() {
 
   const Stack = createNativeStackNavigator();
-  let persistor = persistStore(store)
+  let persistor = persistStore(store, null, () => {
+    console.log('rehydration completed!');
+  }, 10000); // 10 saniye içinde yeniden oluşturma işlemi tamamlanmazsa timeout hatası verir
 
   return (
     <Provider store={store}>
@@ -44,6 +47,8 @@ function App() {
                          }} />
               <Stack.Screen name="Not" component={Note} />
             </Stack.Navigator>
+            <FlashMessage position="top" /> 
+
         </NavigationContainer>
       </PersistGate>
     </Provider>

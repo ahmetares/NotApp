@@ -2,7 +2,9 @@ import { StyleSheet, Alert, View,Text,KeyboardAvoidingView,ScrollView,Dimensions
 import Button from '../components/Button';
 import {useEffect, useState} from 'react'
 import { useSelector,useDispatch } from "react-redux";
-import { updateNote } from "../store/noteSlice";
+import { updateNote, updatePinnedNote } from "../store/noteSlice";
+
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 const deviceSize = Dimensions.get('window')
 
@@ -14,6 +16,7 @@ function Note ({route,navigation}) {
 
     const note = route.params.note
     const id = route.params.id
+    const isPinned = route.params.isPinned
 
     const dispatch = useDispatch()
     const notes = useSelector((state) => state.notes.notes)
@@ -23,8 +26,21 @@ function Note ({route,navigation}) {
     },[])
 
 
-    const saveNote =  (id,text) => {   
-      dispatch(updateNote({id,text}))  //action.payload'a id ve text'i gönderdik  
+    const saveNote =  (id,text) => {    
+      try {
+        if(!isPinned){
+        dispatch(updateNote({id,text}))  //action.payload'a id ve text'i gönderdik  
+        }
+        if(isPinned){
+        dispatch(updatePinnedNote({id,text}))
+        }
+        showMessage({
+          message: "Not başarıyla kaydedildi",
+          type: "info",
+        });
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     return(

@@ -14,26 +14,31 @@ import { useSelector, useDispatch } from 'react-redux'
 import { decrement, increment,addNote } from '../store/noteSlice'
 import Button from '../components/Button';
 
+import { showMessage, hideMessage } from "react-native-flash-message";
+
 const deviceSize = Dimensions.get('window')
 
 function NoteWriter({navigation}) {
 
   const [text,setText] = useState('')
-  
   const notes = useSelector((state) => state.notes.notes)
-
   const dispatch = useDispatch()
 
 
   function handleNote() {
     if(!text){
-      Alert.alert( 'Lütfen geçerli bir not giriniz');
+      showMessage({
+        message: "Lütfen not giriniz",
+        type: "danger",
+      });
       return
     }
     dispatch(
       addNote({
       id: Math.floor(Math.random() * 100000),
       note: text,
+      date: new Date().toISOString(),
+      isPinned: false,
     })
     )
     navigation.navigate('Not Defteri')

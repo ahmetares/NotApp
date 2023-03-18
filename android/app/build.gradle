@@ -94,9 +94,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.notapp"
+    namespace "com.notappfromata"
     defaultConfig {
-        applicationId "com.notapp"
+        applicationId "com.notappfromata"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
