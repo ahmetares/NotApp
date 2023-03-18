@@ -24,32 +24,33 @@ import Note from './src/pages/Note';
 
 import store from './src/store/store'
 import { Provider } from 'react-redux'
-import { useDispatch,useSelector } from 'react-redux';7
-import Button from './src/components/Button';
+
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
+import FlashMessage from "react-native-flash-message";
 
 function App() {
 
   const Stack = createNativeStackNavigator();
-
-
-  const handleNote = () => {
-    const dispatch = useDispatch()
-    
-
-  }
+  let persistor = persistStore(store, null, () => {
+    console.log('rehydration completed!');
+  }, 10000); // 10 saniye içinde yeniden oluşturma işlemi tamamlanmazsa timeout hatası verir
 
   return (
     <Provider store={store}>
-    <NavigationContainer>
-    <Stack.Navigator>
-        <Stack.Screen name="Not Defteri" component={Notebook} />
-        <Stack.Screen name="Notlar" component={NoteWriter}
-        options={{
-        }} />
-      <Stack.Screen name="Not" component={Note} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <PersistGate loading={null} persistor={persistor}>
+         <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen name="Not Defteri" component={Notebook} />
+              <Stack.Screen name="Notlar" component={NoteWriter}
+              options={{
+                         }} />
+              <Stack.Screen name="Not" component={Note} />
+            </Stack.Navigator>
+            <FlashMessage position="top" /> 
 
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
 
   );

@@ -4,11 +4,24 @@ react redux ile notları pushlama ve flatliste verme done
 flatlist ile notecard componentini kullanarak notları listeleme done
 mevcut notları yeni bi sayfada goruntuleme done
 mevcut notları reduxa yazılan fonksiyon ile update etme done
+********************************************
 
+notları silinmesi (push ve update tamam) done  
+notları localstorage'a kaydetme  done 
+******************************************************
 
-notları silinmesi (push ve update tamam)
-notları localstorage'a kaydetme 
-notların listelenme biçim değişiklikleri (renk,düzen)
+notların listelenme biçim değişiklikleri - renk done
+not editlenince ve eklenemeyince flash message done
+zaman muhabbeti done
+notun ilk satırını gösterme done
+not sabitleme //isPinned=false ekledik done
+
+toplu mesaj silme 
+gece gündüz modu
+notların listelenme biçim değişiklikleri - düzen
+plus butonun kaybolması animasyonlu olsun
+Bulk selectedsa mesjaın kayması animasyonlu
+mesajı kaydırma ile iş bitince otomatik kapansın 
 
 
   <>
@@ -35,6 +48,7 @@ notların listelenme biçim değişiklikleri (renk,düzen)
 
 
       //video
+      https://www.youtube.com/watch?v=oEc6ndf8MXg&list=PLaAoUJDWH9WonhD-ZLyYber1O7LnoI62w&index=1&ab_channel=FullStackNiraj
       --------------------------------
       *colorları dosyadan alma = color.js diye dosyanın içine export default {DARK: '#232323' , PRIMARY: '#1f1f1f' , ERROR:...} vs yazıp style'ların içinde color=colors.PRIMARY
      --------------------------------
