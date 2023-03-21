@@ -1,50 +1,44 @@
 import React, {useEffect,useState,useCallback} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-  Alert
-} from 'react-native';
-import PlusButton from '../components/PlusButton';
-import Button from '../components/Button';
+import {StyleSheet,Text,View,TouchableOpacity,FlatList,TouchableWithoutFeedback,Dimensions,Alert} from 'react-native';
+
 import { useDispatch, useSelector } from 'react-redux';
-import NoteCard from '../components/NoteCard';
+import { showMessage, hideMessage } from "react-native-flash-message";
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { deleteNote, setItems, updateNote,pinNote,unPinNote } from '../store/noteSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/AntDesign' // ekstra npm i --save-dev @types/react-native-vector-icons  yapınca calıstı ayrıca bu paket için android ve iosda konfig. yapılmalı
 import MCIIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import IONIcon from 'react-native-vector-icons/Ionicons'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { showMessage, hideMessage } from "react-native-flash-message";
 
+import IconButton from '../components/IconButton';
+import NoteCard from '../components/NoteCard';
+import DrawerMenu from '../components/DrawerMenu';
+import { deleteNote,pinNote,unPinNote,deleteBulky } from '../store/localStorageSlicer/noteSlice';
+import { changeBoole2, setDrawerOpen,closeDrawer,handleDrawerStatus } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
 
 
 function Notes({navigation}) {
-
-  const note = useSelector((state)=> state.notes.notes)
-  const pinnedNotes = useSelector((state)=> state.notes.pinnedNotes)
-
-
-  const allNotes = pinnedNotes.concat(note)
-  
-
   const dispatch = useDispatch()
 
   const [isPinned, setPinned] = useState(false)
   const [bulkDelete, setIsBulkDelete] = useState(false)
 
 
+  const note = useSelector((state)=> state.notes.notes)              //1
+  const pinnedNotes = useSelector((state)=> state.notes.pinnedNotes) //2
+  const allNotes = pinnedNotes.concat(note)                          //1+2 (flatlist'e bunu verdik, pinned note hep en üstte , pinned olmayanlarsa kendi kendine sortlandı)
 
+
+
+ //////////NAVIGATIONLAR////////////////
  const navigateToWriter = () => { navigation.navigate('Notlar') }
  const navigateToNote = (note,id,isPinned) => {
   navigation.navigate('Not',{note,id,isPinned})
  }
 
+
+ //////////NOTU SİLME////////////////
  const handleDelete = (item) => {
-  Alert.alert('Notu sil','Notu silmek istediğinizden emin misiniz', [
+  Alert.alert('Notu sil','Notu silmek istediğinizden emin misiniz?', [
     {
       text: 'Vazgeç',
       style: 'cancel',
@@ -57,7 +51,7 @@ function Notes({navigation}) {
      } ,
   ])
  }
-
+ //////////SABİT NOTU SİLEMEME////////////////
  const handleUnDelete = (item) => {
   showMessage({
     message: "Sabitlenmiş notlar silinemez",
@@ -65,25 +59,63 @@ function Notes({navigation}) {
   });
  }
 
- const handlePin = (item) => {
+ //////////NOT SABİTLEME////////////////
+  const handlePin = (item) => {
   setPinned(!isPinned)
   dispatch(pinNote(item.id))
 
  } 
 
+ //////////NOTU SABİTLEMEDEN ÇIKARMA////////////////
  const handleUnPin = (item) => {
   setPinned(!isPinned)
   dispatch(unPinNote(item.id))
  }
 
- /*useEffect(()=> {
-   async function a() { 
+ //////////TOPLU SİLME MODUNU AÇMA////////////////
+ const handleBulkDelete=() => {
+      setIsBulkDelete(!bulkDelete)
+      dispatch(handleDrawerStatus())
+      dispatch(closeDrawer())
 
-   await AsyncStorage.clear()
-  }
-   a()
- },[])   */
+ }
 
+//////////TOPLU SİLME///////////////////////////
+const selectedBulkNotes = useSelector((state)=> state.notLocalNotes.bulkDelete)
+ console.log('bulk deletionÇ: ' , selectedBulkNotes)
+ 
+ const confirmBulkDelete= () => {
+  Alert.alert('Toplu silme','Notları toplu şekilde silmek istediğinizden emin misiniz?', [
+    {
+      text: 'Vazgeç',
+      style: 'cancel',
+    },
+    {
+      text: 'Sil', 
+      onPress: () => {
+        dispatch(deleteBulky(selectedBulkNotes))
+        showMessage({
+          message: "Notlar silindi",
+          type: "danger",
+        });
+        handleBulkDelete()
+      }
+     } ,
+  ])
+ }
+
+
+  
+ const states = useSelector((state)=> state.notes)
+ const states2 = useSelector((state)=> state.notLocalNotes)
+
+ const drawerMenu =  useSelector((state)=> state.notLocalNotes.isDrawerOpen)
+
+ useEffect(()=> {
+   console.log('stateler bunlar:' , states)
+   //console.log('nonLocalstateler bunlar:' , states2)
+
+ },[states])
 
 
 
@@ -91,19 +123,27 @@ function Notes({navigation}) {
     <>
     <View style={{}}>
 
-        <TouchableOpacity onPress={()=> setIsBulkDelete(!bulkDelete)}>
-          <Text>Seç</Text>
-        </TouchableOpacity>
+      {drawerMenu? <DrawerMenu handleBulkSelection={handleBulkDelete} /> : null}
 
-        <SwipeListView   data={allNotes}  //redux'taki note state'ini listele  (bu state aynı zamanda redux-persist ile localStorage ile senktronize)
+         {drawerMenu ?    //DRAWER DIŞINA TIKLANINCA KAPATMA FONKSİYONU
+        <TouchableWithoutFeedback onPress={()=>dispatch(closeDrawer())} >
+            <View style={[StyleSheet.absoluteFillObject, {flex:1, zIndex:1 }]}  />
+      </TouchableWithoutFeedback> : null }
+
+
+        {bulkDelete? <TouchableOpacity onPress={handleBulkDelete}>
+          <Text style={styles.cancelBulkSelection}>İptal</Text>
+        </TouchableOpacity> : null}
+
+        <SwipeListView data={allNotes}  
  
-        style={{height:Dimensions.get('window').height/1.2, padding:10 /*flatliste height vererek plusbutton'u position:absolute gibi kullanabildik*/}}
+        style={{height:Dimensions.get('window').height/1, padding:10 /*flatliste height vererek plusbutton'u position:absolute gibi kullanabildik*/}}
         renderItem={({item}) => <NoteCard message={item} bulkDelete={bulkDelete} isPinned={item.isPinned} onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
         
         renderHiddenItem={ (data, rowMap) => (
             <View style={styles.rowBack}>
               {
-                data.item.isPinned==false ? 
+                data.item.isPinned==false ?     //DELETE ICON - ACCORDING TO PIN STATUS
                 <Icon 
                 onPress={() => handleDelete(data.item)}
                 name={'delete'} color='white' size={30} style={styles.trash}
@@ -117,8 +157,8 @@ function Notes({navigation}) {
               </IONIcon>
               }
                 
-                {
-                data.item.isPinned==false? 
+              {
+                data.item.isPinned==false?    //PIN ICON - ACCORDING TO PIN STATUS
                 <MCIIcon 
                 onPress={() => handlePin(data.item)}
                 name={'pin'} color='white' size={30} style={styles.pin}
@@ -137,9 +177,23 @@ function Notes({navigation}) {
       rightOpenValue={0}
          />
         
-       {!bulkDelete &&  <PlusButton icon={'plus'} onPress={navigateToWriter} />}
+       {!bulkDelete ?            //PLUS or BULK DELETE BUTTON
+       <IconButton icon={'plus'} 
+       color={'white'} 
+       style={{backgroundColor:'blue'}}
+       onPress={navigateToWriter} /> 
+       : 
+       <IconButton icon={'delete'} 
+       color={'white'} 
+       style={{backgroundColor:'red'}}
+       onPress={confirmBulkDelete} />}
+
+
+
 
       </View>
+   
+    
 
       </>
 
@@ -152,8 +206,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius:10,
     backgroundColor: '#f2f2f2',
-    marginLeft:13,
-    marginVertical:12,
+    marginLeft:14,
+    marginVertical:1,
     flex: 1,
     flexDirection: 'row',
     maxWidth:Dimensions.get('window').width/1.15,
@@ -161,17 +215,22 @@ const styles = StyleSheet.create({
 
 },
   trash: {
-    backgroundColor:'#E64848',
+    backgroundColor:'#fd3b31',
     paddingVertical:18,
     width:55,
-    textAlign:'center'
+    textAlign:'center',
 
   },
   pin: {
-    backgroundColor:'#fcc200',
+    backgroundColor:'#fe9400',
     width:55, 
     textAlign:'center',
     paddingVertical:18
+  },
+  cancelBulkSelection: {
+    fontSize:30,
+    marginLeft:20
+   
   }
 });
 

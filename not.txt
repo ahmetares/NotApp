@@ -8,6 +8,7 @@ mevcut notları reduxa yazılan fonksiyon ile update etme done
 
 notları silinmesi (push ve update tamam) done  
 notları localstorage'a kaydetme  done 
+notların kaydırılarak update ve delete işlemleri done
 ******************************************************
 
 notların listelenme biçim değişiklikleri - renk done
@@ -15,13 +16,22 @@ not editlenince ve eklenemeyince flash message done
 zaman muhabbeti done
 notun ilk satırını gösterme done
 not sabitleme //isPinned=false ekledik done
+toplu mesaj silme done
+//burda kaldık reduxa ekledik ama mantıksız oluyor kapatıp açtığında saçma olur sadece state'de kalması daha mantıklı bu işi notebook'da çözmeliyik 
+-- bu işi state'den çözelim reduxtan değil, redux persist işimizi kolaylaştırdı ama redux'a hakimiyetimizi kaybetttik
+ikinci bi slice denenebilir yeni store yeni Provider
+//  configdeki whitelist notes state ismi degil reducer ismi, yeni bi slice ekledik ve cozum bulduk
 
-toplu mesaj silme 
-gece gündüz modu
-notların listelenme biçim değişiklikleri - düzen
-plus butonun kaybolması animasyonlu olsun
-Bulk selectedsa mesjaın kayması animasyonlu
+
+ alttaki şeyler bir hamburger menü ile yani yandan açılan kısım ile verilsin hatta toplu mesaj seç bile oraya eklebilir
+-gece gündüz modu
+-notların listelenme biçim değişiklikleri - düzen
+-notların renk değişiklikleri seçenekleri
+
 mesajı kaydırma ile iş bitince otomatik kapansın 
+toplu not silmede bişeye tıklanınca kapatılsa bile hala önceden seçilenler açık kalıyor.
+plus butonun kaybolması ve bulk selectedsa mesjaın kayması animasyonlu olsun
+
 
 
   <>

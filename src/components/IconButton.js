@@ -7,11 +7,11 @@ import {
     TouchableOpacity
   } from 'react-native';
 
-  function PlusButton({icon,onPress}) {
+  function IconButton({icon,onPress,color,style}) {
     return (
       <View style={styles.wrapper}>
-        <TouchableOpacity style={styles.container} onPress={onPress}>
-        <Icon name={icon} color='white' size={40} />
+        <TouchableOpacity style={[styles.container , {...style}]} onPress={onPress}>
+        <Icon name={icon} color={color} size={40} />
         </TouchableOpacity>
         </View>
 
@@ -23,16 +23,15 @@ import {
 
 const styles = StyleSheet.create({
     wrapper:{
-      flex: 1,
-       justifyContent: 'flex-end', 
-       alignItems: 'flex-end', 
-       margin: 20, 
+      position:'absolute',
+      bottom:140,
+      right:10
+       
     },
     container: {
       width: 70, 
       height: 70, 
       borderRadius: 50, 
-      backgroundColor: 'blue', 
       justifyContent: 'center', 
       alignItems: 'center'
   },
@@ -40,4 +39,4 @@ const styles = StyleSheet.create({
 })
 
 
-  export default PlusButton;
+  export default IconButton;

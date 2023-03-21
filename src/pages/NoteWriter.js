@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Dimensions,
-  KeyboardAvoidingView,
-  ScrollView,
-  Alert,
-  Modal
-} from 'react-native';
+import { StyleSheet, View, TextInput, Dimensions, KeyboardAvoidingView,ScrollView,Alert,  Modal } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
-import { decrement, increment,addNote } from '../store/noteSlice'
+import { addNote } from '../store/localStorageSlicer/noteSlice'
 import Button from '../components/Button';
 
 import { showMessage, hideMessage } from "react-native-flash-message";
@@ -26,7 +16,7 @@ function NoteWriter({navigation}) {
 
 
   function handleNote() {
-    if(!text){
+    if(!text.trim()){
       showMessage({
         message: "Lütfen not giriniz",
         type: "danger",

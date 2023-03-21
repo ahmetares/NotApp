@@ -24,15 +24,36 @@ console.log(arr); // 👉️ ['js', 'ts', 'css']
 
 
 
-const arr1 = [1,2,3]
-const arr2 = [4,5,6]
-console.log(arr1.concat(arr2))
+const bulkDeletedNotes = ['a','b','c','d','e','f']
+const arr2 = ['a','b','c']
 
 
-const arr3 = ['aaaaa', 'bbbbbb']
-const arr4 = []
-arr4.push(arr3[1])
-arr3.pop(arr3[1])
 
-console.log(arr3)
-console.log(arr4)
+for (var i = arr2.length -1; i >= 0; i--)
+bulkDeletedNotes.splice(arr2[i],1);   //Remove 1 element at arr2[i]
+
+   console.log('yeniBulkDelete:' , bulkDeletedNotes)
+
+
+
+
+const ourNotes = [{"date": "2023-03-20T15:22:10.184Z", "id": 34853, "isPinned": false, "note": "34"},{"date": "2023-03-20T15:23:10.184Z", "id": 34854, "isPinned": false, "note": "aaaaaa"}];
+
+const bulk = [{"date": "2023-03-20T15:22:10.184Z", "id": 34853, "isPinned": false, "note": "34"}];
+const bulkIds = bulk.map(note => note.id);
+
+const filteredNotes = ourNotes.filter(note => !bulkIds.includes(note.id));
+
+console.log('our new notes: ',filteredNotes); // Output: [{date: '2023-03-20T15:23:10.184Z',id: 34854,isPinned: false,note: 'aaaaaa'}]
+
+
+
+
+
+
+console.log('action.payload:' , action.payload)
+
+const selectedNotes = action.payload
+const selectedNotesIds = selectedNotes.map(note => note.id)
+
+state.notes = state.notes.filter(note=> !selectedNotesIds.includes(note.id))

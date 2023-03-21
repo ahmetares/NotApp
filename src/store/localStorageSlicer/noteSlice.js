@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import { useSelector } from 'react-redux'
 
 
 export const noteSlice = createSlice({
   name: 'notes',
   initialState: {
     notes: [],
-    pinnedNotes: []
+    pinnedNotes: [],
+    nightMode: false
   },
   reducers: {
     
@@ -22,9 +23,18 @@ export const noteSlice = createSlice({
       //action.payload'a aldığımız yeni text değerini de eski olanıyla (changedState.note) ile değiştirdik
     },
     deleteNote: (state,action) => {
+      console.log(action.payload)
       state.notes = state.notes.filter((x) => x.id != action.payload)
       //action.payload (id) 'si ile notların id'si aynı olmayanları filtrele
 
+    },
+
+    deleteBulky: (state,action) => {
+      const selectedNotes = action.payload
+      const selectedNotesIds = selectedNotes.map(note => note.id)
+      
+      state.notes = state.notes.filter(note=> !selectedNotesIds.includes(note.id))
+      
     },
 
     pinNote: (state,action) => {
@@ -42,7 +52,7 @@ export const noteSlice = createSlice({
   
        state.pinnedNotes = state.pinnedNotes.filter((x) => x.id != action.payload)    //pinnedNotes'dan çıkar
        state.notes.push(changedNote)   //notes'a ekle
-       sortNotes(state)   
+       sortNotes(state)   //pin'den çıkarıp notes'a yeni not ekleyince bidaha sıralama yaptık
       
   
     },
@@ -53,12 +63,18 @@ export const noteSlice = createSlice({
       //action.payload'a aldığımız yeni text değerini de eski olanıyla (changedState.note) ile değiştirdik
     },
 
+    changeNightMode: (state,action) => {
+      state.nightMode = !state.nightMode
+    }, 
+
   }
  
 })
 
+
+
 const sortNotes = (state) => {
-  state.notes = state.notes.sort(function(a, b) {     //pushladıktan sonra tarihine göre listele
+  state.notes = state.notes.sort(function(a, b) {     // tarihine göre listele
     return (a.date > b.date) ? -1 : ((a.date < b.date) ? 1 : 0);
 })
 }
@@ -66,6 +82,6 @@ const sortNotes = (state) => {
 
 
 
-export const { increment, decrement, incrementByAmount, addNote,updateNote,deleteNote,pinNote,unPinNote,updatePinnedNote } = noteSlice.actions
+export const { addNote, updateNote, deleteNote, deleteBulky, pinNote, unPinNote, updatePinnedNote,changeNightMode} = noteSlice.actions
 
 export default noteSlice.reducer

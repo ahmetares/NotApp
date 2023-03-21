@@ -2,7 +2,7 @@ import { StyleSheet, Alert, View,Text,KeyboardAvoidingView,ScrollView,Dimensions
 import Button from '../components/Button';
 import {useEffect, useState} from 'react'
 import { useSelector,useDispatch } from "react-redux";
-import { updateNote, updatePinnedNote } from "../store/noteSlice";
+import {  updateNote, updatePinnedNote } from "../store/localStorageSlicer/noteSlice";
 
 import { showMessage, hideMessage } from "react-native-flash-message";
 
@@ -42,10 +42,10 @@ function Note ({route,navigation}) {
         console.log(error)
       }
     }
-
+      
     return(
         <KeyboardAvoidingView
-        {...(Platform.OS === 'ios' ? { behavior: 'padding' } : {})}
+        {...(Platform.OS === 'ios' ? { behavior: 'padding' } : {})} 
         style={styles.container}>
           <ScrollView>
     
