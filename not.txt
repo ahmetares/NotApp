@@ -1,38 +1,45 @@
-plus buton done
-plus buton ile flatlistin ust uste gelmesi done
-react redux ile notları pushlama ve flatliste verme done
-flatlist ile notecard componentini kullanarak notları listeleme done
-mevcut notları yeni bi sayfada goruntuleme done
-mevcut notları reduxa yazılan fonksiyon ile update etme done
+*plus buton done
+*plus buton ile flatlistin ust uste gelmesi done
+*react redux ile notları pushlama ve flatliste verme done
+*flatlist ile notecard componentini kullanarak notları listeleme done
+*mevcut notları yeni bi sayfada goruntuleme done
+*mevcut notları reduxa yazılan fonksiyon ile update etme done
 ********************************************
 
-notları silinmesi (push ve update tamam) done  
-notları localstorage'a kaydetme  done 
-notların kaydırılarak update ve delete işlemleri done
+*notları silinmesi (push ve update tamam) done  
+*notları localstorage'a kaydetme  done 
+*notların kaydırılarak update ve delete işlemleri done
 ******************************************************
 
-notların listelenme biçim değişiklikleri - renk done
-not editlenince ve eklenemeyince flash message done
-zaman muhabbeti done
-notun ilk satırını gösterme done
-not sabitleme //isPinned=false ekledik done
-toplu mesaj silme done
+*notların listelenme biçim değişiklikleri - renk done
+*not editlenince ve eklenemeyince flash message done
+*zaman muhabbeti done
+*notun ilk satırını gösterme done
+*not sabitleme //isPinned=false ekledik done
+*toplu mesaj silme done
 //burda kaldık reduxa ekledik ama mantıksız oluyor kapatıp açtığında saçma olur sadece state'de kalması daha mantıklı bu işi notebook'da çözmeliyik 
 -- bu işi state'den çözelim reduxtan değil, redux persist işimizi kolaylaştırdı ama redux'a hakimiyetimizi kaybetttik
 ikinci bi slice denenebilir yeni store yeni Provider
 //  configdeki whitelist notes state ismi degil reducer ismi, yeni bi slice ekledik ve cozum bulduk
 
+*alttaki şeyler bir hamburger menü ile yani yandan açılan kısım ile verilsin hatta toplu mesaj seç bile oraya eklebilir done
+*gece gündüz modu done
+*notların listelenme biçim değişiklikleri - düzen pakette yok yapmadık
 
- alttaki şeyler bir hamburger menü ile yani yandan açılan kısım ile verilsin hatta toplu mesaj seç bile oraya eklebilir
--gece gündüz modu
--notların listelenme biçim değişiklikleri - düzen
+
+-longpress component * burda kaldık reduxtaki state'i true olunca tüm notlarda açıldı sadece 1 tane açılmalı
 -notların renk değişiklikleri seçenekleri
+-tarihe göre sıralama
+-search
+-mesajı kaydırma ile iş bitince otomatik kapansın 
+-plus butonun kaybolması ve bulk selectedsa mesjaın kayması animasyonlu olsun
 
-mesajı kaydırma ile iş bitince otomatik kapansın 
-toplu not silmede bişeye tıklanınca kapatılsa bile hala önceden seçilenler açık kalıyor.
-plus butonun kaybolması ve bulk selectedsa mesjaın kayması animasyonlu olsun
 
-
+++++BUG toplu silmede tüm mesaja tıklayınca icon'un çalışması
+BUG uygulama resmi yok canlıda
+++++BUG kaydet boşluk olunca da çalışıyo
+++++BUG toplu silmede hiç bişey seçili değilse de silinebiliyor
+BUG hiç not yoksa notları seç ve renkleri seç e tıklayama
 
   <>
     <View>
@@ -102,7 +109,7 @@ plus butonun kaybolması ve bulk selectedsa mesjaın kayması animasyonlu olsun
       --------------------------------
       * flatlistleri sütun mantığı verebilmek =  <Flatlist ... numColumns = {2} .. />  iki satıra böle böle yazdı
            ve numColumns > 1 ise  columnWrapperStyle verilebilir ={{justifyContent:'space-between'}}    ( 4 / 14.54)
-      --------------------------------
+      --------------------------------------------------------------------------------------------
       *  notları asyncStorage kaydetme mantığı: 
       NoteInputModal componenti title ve desc'i onSubmit propundan gönderdi ve NoteScreen içinden bu comp cagırıldı 
       ve text,desc değerleri NoteInputModal'dan handleOnSubmit metodu ile elde edildi
@@ -143,6 +150,76 @@ plus butonun kaybolması ve bulk selectedsa mesjaın kayması animasyonlu olsun
          6- findNotes AsyncStorage ile get yapıp notes i alıyor ve setNotes() ile state'i güncelliyor
          7- notes state'ini flatlist ile kullanıyoruz
 
+  ------------------------------------------------------------------------------------------------------------------------
+    * Flatlist yatay yapma =>  numColumns={3} diyip flatlist'i yatay sütünsal mantıkla kullanabilmek için keyExtractor'a id den sonra toString() verdik ve bug gitti (ColorPaletteComponent.js) (4.video, 13.11)
+    * flatlist arasına seperator koyma =  <FlatList .. ItemSeparatorComponent={renderSeperator} />      const renderSeperator = () => <View style={styles.seperator} />
 
 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const base_style = {
+  container: {
+    flex:1
+  },
+  input_container: {
+    height:Dimensions.get('window').height/1
+  },
+  input: {
+    height:Dimensions.get('window').height/1
+  }
+}
+
+
+const styles = {
+
+  light: StyleSheet.create({
+    ...base_style,
+    input:{
+      ...base_style.input,
+      backgroundColor:'white',
+  
+    },
+    input_container:{
+      ...base_style.input_container,
+      backgroundColor:'white',
+    },
+    button_container:{
+      backgroundColor:'white'
+    }
+  }),
+
+  dark: {
+    ...base_style,
+    input:{
+      ...base_style.input,
+      backgroundColor:'green',
+      color:'yellow',
+  
+    },
+    input_container:{
+      ...base_style.input_container,
+      backgroundColor:'red',
+    },
+    button_container:{
+      backgroundColor:'black'
+    }
+  }
+}
                 

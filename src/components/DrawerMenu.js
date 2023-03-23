@@ -7,60 +7,59 @@ import EntIcons from 'react-native-vector-icons/Entypo'
 import MatIcons from 'react-native-vector-icons/MaterialIcons' 
 import FoIcons from 'react-native-vector-icons/Fontisto'
 
-import { handleDrawerStatus } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
-import { useDispatch } from 'react-redux';
+import { handleDrawerStatus,closeDrawer,openColorModal } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
+import { useDispatch,useSelector } from 'react-redux';
 import { changeNightMode } from '../store/localStorageSlicer/noteSlice';
 
-function DrawerMenu({handleBulkSelection, handleDesignChange}) {
+function DrawerMenu({handleBulkSelection}) {  //notları seç'i prop alarak yapmışız ama burdanda yapılabilirdi
 //    backgroundColor: '#5359D1',
 
     const dispatch = useDispatch()
 
-    const [nightMode, setNightMode] = useState(false)  //ikiside localSlice ile bağlantılı olsun
-    const [tableMode, setTableMode] = useState(false)
+    const [nightMode, setNightMode] = useState(false)  
 
     const handleNightMode=  () => {
         setNightMode(!nightMode)
         dispatch(changeNightMode())
     }
 
-    const handleTableMode=  () => {
-        setTableMode(!tableMode)
+
+    const handleColorPaletteModal = () => {
+      dispatch(openColorModal())
+      dispatch(closeDrawer())  //drawer'i kapat
     }
+
+    
+
 
     return(
     <View style={styles.container}>
         <View style={styles.drawerContainer}>
             
-          {nightMode ? <EntIcons name='light-up' size={30}  onPress={handleNightMode} style={styles.mode}  /> :
-         <IonIcons name='md-moon' size={30} color={'black'} onPress={handleNightMode} style={styles.mode} /> }
+          {nightMode ? <EntIcons name='light-up' size={25}  onPress={handleNightMode} style={styles.mode}  /> :
+         <IonIcons name='md-moon' size={25} color={'black'} onPress={handleNightMode} style={styles.mode} /> }
 
 
-        <TouchableOpacity style={{marginTop:55}} onPress={handleTableMode}>
-            {!tableMode ? 
-            <View style={styles.bulkDeletionWrapper}>
-         <Text style={styles.bulkDeletionText}>Galeri Olarak Göster</Text>
-            <FoIcons name='table-1' size={20} color='black' style={{marginRight:2, marginTop:3}} />
-            </View> 
-            : 
-            <View style={styles.bulkDeletionWrapper}>
-            <Text style={styles.bulkDeletionText}>Liste Olarak Göster</Text>
-               <MatIcons name='table-rows' size={20} color='black' style={{marginRight:2, marginTop:3}}/>
-               </View>
-             }
-         </TouchableOpacity>
 
+         <TouchableOpacity style={{marginTop:55}} onPress={handleBulkSelection}>
          <View style={styles.seperator}></View>
 
-         <TouchableOpacity onPress={handleBulkSelection}>
             <View style={styles.bulkDeletionWrapper}>
-         <Text style={styles.bulkDeletionText}>Notları Seç</Text>
-            <IonIcons name='checkmark-circle-outline' size={25} color='black' />
+         <Text style={styles.bulkDeletionText}>Notları seç</Text>
+            <IonIcons name='checkmark-circle-outline' size={20} color='black' />
             </View>
          </TouchableOpacity>
 
          <View style={styles.seperator}></View>
 
+         <TouchableOpacity onPress={handleColorPaletteModal}>
+            <View style={styles.bulkDeletionWrapper}>
+         <Text style={styles.bulkDeletionText}>Renk seç</Text>
+            <IonIcons name='color-palette-outline' size={20} color='black' />
+            </View>
+         </TouchableOpacity>
+        
+         <View style={styles.seperator}></View>
 
 
 
@@ -74,13 +73,14 @@ const styles = StyleSheet.create({
   container: {
     zIndex:2,
     position:'absolute',
-    width:200,
+    width:230,
     height:250,
     backgroundColor:'#f4f4f6',
     top:5,
-    right:3,
+    right:5,
     borderRadius:20,
-    borderWidth:0.9
+    borderWidth:0.9,
+
   },
   drawerContainer:{
     display:'flex',
@@ -97,8 +97,9 @@ const styles = StyleSheet.create({
   bulkDeletionText:{
     marginLeft:10,
     flex:1,
-    fontWeight:'bold',
-    fontSize:17
+    fontWeight:500,
+    fontSize:17,
+    color:'black'
   },
   seperator:{
     borderWidth:0.6,

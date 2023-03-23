@@ -5,10 +5,12 @@ import { createSlice } from '@reduxjs/toolkit'
 export const nonLocalNoteSlice = createSlice({
   name: 'notLocalNotes',
   initialState: {
-    secondBoole:false,
+    bulkDeleteStatus:false,
     bulkDelete: [],
     isDrawerOpen: false,
-    headerDrawerStatus: false  //şimdilik kullanmadık, amaç notları seç'den sonra tamamlandı yazdırmaktı
+    isLongPressOpen: false,
+    isColorModalOpen:false,
+  
 
   },
   reducers: {
@@ -31,16 +33,25 @@ export const nonLocalNoteSlice = createSlice({
     closeDrawer: (state,action) => {
       state.isDrawerOpen = false
     },
-    handleDrawerStatus: (state,action) => {
-      state.headerDrawerStatus = true
+ 
+    handleBulkDeleteStatus: (state,action) => {
+      state.bulkDeleteStatus = !state.bulkDeleteStatus
     },
-
+    handleLongPressStatus:  (state,action) => {
+      state.isLongPressOpen = action.payload
+    },
+    openColorModal: (state,action) => {
+      state.isColorModalOpen = true
+    },
+    closeColorModal: (state,action) => {
+      state.isColorModalOpen = false
+    },
 
   }
  
 })
 
 
-export const {changeBoole2,pushBulkDelete,popBulkDelete,setDrawerOpen,closeDrawer,handleDrawerStatus } = nonLocalNoteSlice.actions
+export const {changeBoole2,pushBulkDelete,popBulkDelete,setDrawerOpen,closeDrawer,handleBulkDeleteStatus,handleLongPressStatus,openColorModal,closeColorModal } = nonLocalNoteSlice.actions
 
 export default nonLocalNoteSlice.reducer

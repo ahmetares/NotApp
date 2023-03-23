@@ -1,18 +1,18 @@
-import { StyleSheet, View, TouchableOpacity, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View,TouchableHighlight, TouchableOpacity, Text, TouchableWithoutFeedback } from "react-native"
+import { useEffect, useState } from "react";
+
 import { format, formatDistance, formatRelative, parseISO, subDays } from 'date-fns'
 import { tr } from "date-fns/locale";
 import FeaIcon from 'react-native-vector-icons/Feather'
 import FontAIcon from 'react-native-vector-icons/FontAwesome'
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import AntIcon from 'react-native-vector-icons/AntDesign'
-
 import { useDispatch ,useSelector} from "react-redux";
 
-import { useEffect, useState } from "react";
-import { pushBulkDelete,popBulkDelete } from "../store/notLocalStorageSlicer/nonLocalNoteSlice";
+import { pushBulkDelete,popBulkDelete, handleLongPressStatus } from "../store/notLocalStorageSlicer/nonLocalNoteSlice";
+import { changeNoteColor } from "../store/localStorageSlicer/noteSlice";
 
-
-function NoteCard({ message, onPress, bulkDelete, isPinned }) {
+function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' }) {
 
     const dispatch = useDispatch()
 
@@ -33,53 +33,69 @@ function NoteCard({ message, onPress, bulkDelete, isPinned }) {
         
     }
 
+     const noteColor = useSelector((state)=> state.notes.noteColor)
+     const nightMode = useSelector((state)=> state.notes.nightMode)
 
 
+
+     useEffect(()=> {
+        if(!nightMode){
+            dispatch(changeNoteColor('white'))
+        }
+        else dispatch(changeNoteColor('#171515'))
+     },[nightMode])
+
+
+    
     return (
 
-        <TouchableWithoutFeedback onPress={onPress}>
+        <TouchableHighlight onPress={bulkDelete && !isPinned ? handleIcon : onPress} activeOpacity={0.5} underlayColor="#DDDDDD">
             {bulkDelete && !isPinned ?  //toplu seçim açık mı ve not pinsiz mi ?
-                <View style={styles.container}>
+                <View style={[styles[theme].container , {backgroundColor:noteColor,}  ]}>
 
                     {!isSelected ?  //yuvarlak seçildimi
-                        <FontAIcon size={30} color={'grey'} name={'circle-thin'} onPress={handleIcon} style={{ position: 'absolute', zIndex: 1, top: 22, left: 20, opacity:0.5 }} />
+                        <FontAIcon size={30} color={'grey'} name={'circle-thin'} onPress={handleIcon} style={{ width:100,position: 'absolute', zIndex: 1, top: 22, left: 20, opacity:0.5 }} />
                         :
                         <MCIcon size={30} color={'red'} name={'delete-circle'} onPress={handleIcon} style={{ position: 'absolute', zIndex: 1, top: 22, left: 20 }} />
                     }
 
-                    <Text numberOfLines={1} style={[styles.note, { marginLeft: 65 }]}>{firstLine}</Text>
-                    <Text style={styles.date}>{formattedDate}</Text>
+                    <Text numberOfLines={1} style={[
+                        styles[theme].note, 
+                        { marginLeft: 65 }, 
+                        noteColor=='#171515' && {color:'white'}, 
+                        noteColor=='white' && {color:'#171515'}]}>{firstLine}</Text>
+                    <Text style={styles[theme].date}>{formattedDate}</Text>
                 </View>
                 :
-
-                <View style={styles.container}>
-                    {isPinned && <AntIcon size={15} color={'#fe9400'} name={'pushpin'} style={{ position: 'absolute', zIndex: 1, top: 0, left: 0, opacity:0.5 }}/> }
-                    <Text numberOfLines={1} style={styles.note}>{firstLine}</Text>
-                    <Text style={styles.date}>{formattedDate}</Text>
+               
+                <View style={[styles[theme].container , {backgroundColor:noteColor}]}>
+                    {isPinned && <AntIcon size={15} color={'#f20707'} name={'pushpin'} style={{ position: 'absolute', zIndex: 1, top: 0, left: 0, opacity:0.5 }}/> }
+                    <Text numberOfLines={1} style={ [
+                        styles[theme].note , 
+                        noteColor=='#171515' && {color:'white'} , 
+                        noteColor=='white' && {color:'#171515'}]}>{firstLine}</Text>
+                    <Text style={styles[theme].date}>{formattedDate}</Text>
+                    { /* longPressStatus ? <LongPressComponent/> : handleCloseLongPress() */}
                 </View>
 
 
             }
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
     )
 }
 
-const styles = StyleSheet.create({
+const base_style = {
     container: {
-        backgroundColor: 'white',
         display: "flex",
         alignItems: 'center',
         flexDirection: "row",
         height: 75,
-        marginVertical: 1,
+        marginVertical: 10,
         marginHorizontal: 5,
         borderWidth: 1,
-        borderColor: 'rgba(158, 150, 150, .5)',
         borderBottomWidth: 2,
         borderTopWidth: 2,
         borderRadius: 10,
-    
-
     },
 
     note: {
@@ -87,8 +103,6 @@ const styles = StyleSheet.create({
         fontSize:20,
         fontWeight: 'bold',
         marginLeft: 10,
-        color:'black',
-        fontFamily:'Roboto-Black'
     },
     date: {
         marginRight: 5,
@@ -100,6 +114,44 @@ const styles = StyleSheet.create({
 
     }
 
-})
+
+
+}
+
+const styles = {
+    light: StyleSheet.create({
+        ...base_style, 
+            container: {
+                ...base_style.container,
+                backgroundColor: 'white',
+                borderColor: 'rgba(158, 150, 150, .5)',
+
+            },
+            note: {
+                ...base_style.note,
+                color:'black'
+            },
+        
+        
+    }),
+
+    dark: {
+        ...base_style, 
+        container: {
+            ...base_style.container,
+            backgroundColor: '#171515',
+            borderColor: 'rgba(158, 150, 150, .5)',
+
+        },
+        note: {
+            ...base_style.note,
+            color:'white'
+        },
+        date:{
+            ...base_style.date,
+            color:'white'
+        }
+    }
+}
 
 export default NoteCard

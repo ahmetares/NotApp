@@ -7,7 +7,8 @@ export const noteSlice = createSlice({
   initialState: {
     notes: [],
     pinnedNotes: [],
-    nightMode: false
+    nightMode: false,
+    noteColor: ''
   },
   reducers: {
     
@@ -67,6 +68,10 @@ export const noteSlice = createSlice({
       state.nightMode = !state.nightMode
     }, 
 
+    changeNoteColor: (state,action) => {
+      state.noteColor = action.payload
+    }
+
   }
  
 })
@@ -82,6 +87,6 @@ const sortNotes = (state) => {
 
 
 
-export const { addNote, updateNote, deleteNote, deleteBulky, pinNote, unPinNote, updatePinnedNote,changeNightMode} = noteSlice.actions
+export const { addNote, updateNote, deleteNote, deleteBulky, pinNote, unPinNote, updatePinnedNote,changeNightMode,changeNoteColor} = noteSlice.actions
 
 export default noteSlice.reducer

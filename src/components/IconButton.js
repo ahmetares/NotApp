@@ -4,7 +4,8 @@ import {
     Text,
     View,
     Button,
-    TouchableOpacity
+    TouchableOpacity,
+    Dimensions
   } from 'react-native';
 
   function IconButton({icon,onPress,color,style}) {
@@ -24,8 +25,9 @@ import {
 const styles = StyleSheet.create({
     wrapper:{
       position:'absolute',
-      bottom:140,
-      right:10
+      top:Dimensions.get('window').height-180,
+      right:10,
+
        
     },
     container: {
