@@ -25,21 +25,20 @@ ikinci bi slice denenebilir yeni store yeni Provider
 *alttaki şeyler bir hamburger menü ile yani yandan açılan kısım ile verilsin hatta toplu mesaj seç bile oraya eklebilir done
 *gece gündüz modu done
 *notların listelenme biçim değişiklikleri - düzen pakette yok yapmadık
+-search done
+-notların renk değişiklikleri seçenekleri done
 
 
 -longpress component * burda kaldık reduxtaki state'i true olunca tüm notlarda açıldı sadece 1 tane açılmalı
--notların renk değişiklikleri seçenekleri
 -tarihe göre sıralama
--search
 -mesajı kaydırma ile iş bitince otomatik kapansın 
 -plus butonun kaybolması ve bulk selectedsa mesjaın kayması animasyonlu olsun
 
 
 ++++BUG toplu silmede tüm mesaja tıklayınca icon'un çalışması
-BUG uygulama resmi yok canlıda
+++++BUG uygulama resmi yok canlıda
 ++++BUG kaydet boşluk olunca da çalışıyo
 ++++BUG toplu silmede hiç bişey seçili değilse de silinebiliyor
-BUG hiç not yoksa notları seç ve renkleri seç e tıklayama
 
   <>
     <View>

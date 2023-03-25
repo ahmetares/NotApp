@@ -51,9 +51,9 @@ console.log('our new notes: ',filteredNotes); // Output: [{date: '2023-03-20T15:
 
 
 
-console.log('action.payload:' , action.payload)
 
-const selectedNotes = action.payload
-const selectedNotesIds = selectedNotes.map(note => note.id)
 
-state.notes = state.notes.filter(note=> !selectedNotesIds.includes(note.id))
+
+const a = ''
+
+console.log(!a? 'evet çalışmadı' : 'hayır hala dolu ')

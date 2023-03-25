@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, TouchableWithoutFeedback, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput,TouchableOpacity, FlatList, TouchableWithoutFeedback, Dimensions, Alert } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage, hideMessage } from "react-native-flash-message";
@@ -15,6 +15,36 @@ import DrawerMenu from '../components/DrawerMenu';
 import { deleteNote, pinNote, unPinNote, deleteBulky } from '../store/localStorageSlicer/noteSlice';
 import { changeBoole2, setDrawerOpen, closeDrawer, closeColorModal,handleDrawerStatus, handleBulkDeleteStatus } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
 import ColorPaletteModal from '../components/ColorPaletteModal';
+import {  } from 'react-native-gesture-handler';
+import store from '../store/store';
+
+function Header({onText}) {  //Notebook'un en üstünde listelencek (title+searchbar) flatlistin ListHeaderComponent özelliği ile 
+ 
+  const [colorMode, setColorMode] = useState('light')
+  const lightOrNightMode = useSelector((state) => state.notes.nightMode)
+
+  useEffect(() => {
+    if (!lightOrNightMode) {
+      setColorMode('light')
+    } else {
+      setColorMode('dark')
+
+    }
+  }, [lightOrNightMode])
+
+  return(
+   <View>
+
+      <Text style={styles[colorMode].title}>Notlar</Text> 
+
+      <View style={styles[colorMode].searchContainer}>
+      <Icon name={'search1'} color={'grey'} size={20} />
+
+      <TextInput style={styles[colorMode].search} placeholder={'Arayın'} onChangeText={onText} />
+      </View>
+    </View>
+  )
+}
 
 
 function Notes({ navigation }) {
@@ -24,12 +54,25 @@ function Notes({ navigation }) {
   const [bulkDelete, setIsBulkDelete] = useState(false)
   const [colorMode, setColorMode] = useState('light')
 
-  const note = useSelector((state) => state.notes.notes)              //1
-  const pinnedNotes = useSelector((state) => state.notes.pinnedNotes) //2
-  const allNotes = pinnedNotes.concat(note)                          //1+2 (flatlist'e bunu verdik, pinned note hep en üstte , pinned olmayanlarsa kendi kendine sortlandı)
+  const note = useSelector((state) => state.notes.notes)              //1 (pinsiz notlar)
+  const pinnedNotes = useSelector((state) => state.notes.pinnedNotes) //2 (pinli notlar)
+  const allNotes = pinnedNotes.concat(note)                          //1+2 ( pinned note hep en üstte , pinned olmayanlarsa kendi kendine sortlandı)
+  const [list, setList] = useState(allNotes)                          //en son flatliste bunu verdik search bar ile uyumlu olması  için        
+  
 
 
+  useEffect(() => {                                                   //store.subscribe ile herhangi değişiklikte yakaladık, başka türlü olmadı
+    const unsubscribe = store.subscribe(() => {
+      const note = store.getState().notes.notes;
+      const pinnedNotes = store.getState().notes.pinnedNotes;
+      const allNotes = pinnedNotes.concat(note);
+      setList(allNotes);
+    });
+    return unsubscribe;
+  }, []);
 
+
+ 
   //////////NAVIGATIONLAR////////////////
   const navigateToWriter = () => { navigation.navigate('Notlar') }
   const navigateToNote = (note, id, isPinned) => {
@@ -87,8 +130,8 @@ function Notes({ navigation }) {
   }, [bulkDeleteStatus])
 
   //////////TOPLU SİLME///////////////////////////
-  const selectedBulkNotes = useSelector((state) => state.notLocalNotes.bulkDelete)
-  console.log('bulk deletionÇ: ', selectedBulkNotes)
+  const selectedBulkNotes = useSelector((state) => state.notLocalNotes.bulkDelete)  
+  //selectedBulkNotes'u NoteCard'dan içini doldurduk (popBulkDelete, pushBulkDelete)
 
   const confirmBulkDelete = () => {
     if (!(selectedBulkNotes.length > 0)) {
@@ -111,7 +154,7 @@ function Notes({ navigation }) {
             message: "Notlar silindi",
             type: "danger",
           });
-          handleBulkDelete()
+          handleBulkDelete()  //toplu silme işlemi bitince herşeyin kapanması için
         }
       },
     ])
@@ -131,7 +174,7 @@ function Notes({ navigation }) {
   }, [lightOrNightMode])
 
 
-  //////////MODAL İŞLEMLERİ///////////////////////////
+  //////////RENK SEÇME MODAL İŞLEMLERİ///////////////////////////
   const colorModalStatus = useSelector((state) => state.notLocalNotes.isColorModalOpen)
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -147,20 +190,37 @@ function Notes({ navigation }) {
 
 
 
-  /////////////////////////////////////
+  //////////SEARCH İŞLEMLERİ///////////////////////////
 
+    const handleSearchBar = text => {
+      const filteredList = allNotes.filter(note => {
+
+        const searchedText = text.toLowerCase()
+        const currentTitle = note.note.toLowerCase()  //searchbar ve notlar ın ikisinide küçük harf yaptık
+        return currentTitle.indexOf(searchedText) > -1   
+        //mesela currentTitle = ABC  searchedText = F    -1 döner  ama searchedText = C  2 döner
+        })
+
+        setList(filteredList)
+
+    }
+
+
+
+////////////////////STATE KONTROLÜ//////////////////////////////////
   const states = useSelector((state) => state.notes)
   const states2 = useSelector((state) => state.notLocalNotes)
 
-  const drawerMenu = useSelector((state) => state.notLocalNotes.isDrawerOpen)
 
   useEffect(() => {
     //console.log('stateler bunlar:' , states)
-    console.log('nonLocalstateler bunlar:', states2)
+   // console.log('nonLocalstateler bunlar:', states2)
 
   }, [states2])
 
 
+///////////////////////////////////////////////////////
+  const drawerMenu = useSelector((state) => state.notLocalNotes.isDrawerOpen)
 
 
 
@@ -168,19 +228,18 @@ function Notes({ navigation }) {
     <>
       <View style={styles[colorMode].container}>
 
+
         {drawerMenu ? <DrawerMenu handleBulkSelection={handleBulkDelete} /> : null}
 
         {drawerMenu ?    //DRAWER DIŞINA TIKLANINCA KAPATMA FONKSİYONU
           <TouchableWithoutFeedback onPress={() => dispatch(closeDrawer())} >
             <View style={[StyleSheet.absoluteFillObject, { flex: 1, zIndex: 1 }]} />
           </TouchableWithoutFeedback> : null}
+          
 
-
-        <SwipeListView data={allNotes}
-
-          style={{ height: Dimensions.get('window').height - 80, padding: 10 /*flatliste height vererek plusbutton'u position:absolute gibi kullanabildik*/ }}
+        <SwipeListView data={list}
           renderItem={({ item }) => <NoteCard message={item} bulkDelete={bulkDelete} isPinned={item.isPinned} theme={colorMode} onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
-
+          ListHeaderComponent={<Header onText={handleSearchBar}/>}
           renderHiddenItem={(data, rowMap) => (
             <View style={styles[colorMode].rowBack}>
               {
@@ -226,7 +285,7 @@ function Notes({ navigation }) {
         {!bulkDelete ?            //PLUS or BULK DELETE BUTTON
           <IconButton icon={'plus'}
             color={'white'}
-            style={{ backgroundColor: 'blue' }}
+            style={{ backgroundColor: '#d7ac2a' }}
             onPress={navigateToWriter} />
           :
           <IconButton icon={'delete'}
@@ -247,6 +306,9 @@ function Notes({ navigation }) {
 }
 
 const base_style = {
+  container: {
+    flex:1
+  },
   rowBack: {
     alignItems: 'center',
     borderRadius: 10,
@@ -270,6 +332,27 @@ const base_style = {
   },
   cancelBulkSelection: {
     marginLeft: 20,
+  },
+  title:{
+    marginLeft:9,
+    fontWeight:'bold',
+    fontSize:35,
+  },
+  searchContainer:{
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    height:40,
+    marginVertical:4,
+    marginHorizontal:10,
+  },
+  search:{
+    marginBottom:-3,
+    fontSize:15,
+    marginLeft:5,
+    height:35,
+    flex:1
 
   }
 }
@@ -278,7 +361,8 @@ const styles = {
   light: StyleSheet.create({
     ...base_style,
     container: {
-      backgroundColor: '#f2f2f2'
+      ...base_style.container,
+      backgroundColor: '#f2f1f6'
     },
     rowBack: {
       ...base_style.rowBack,
@@ -291,12 +375,20 @@ const styles = {
     pin: {
       ...base_style.pin,
       backgroundColor: '#fe9400',
-
+    },
+    title:{
+      ...base_style.title,
+      color:'black'
+    },
+    searchContainer:{
+      ...base_style.searchContainer,
+      backgroundColor: '#e4e3e8',
     }
   }),
   dark: {
     ...base_style,
     container: {
+      ...base_style.container,
       backgroundColor: '#423d3d'
     },
     rowBack: {
@@ -310,9 +402,18 @@ const styles = {
     pin: {
       ...base_style.pin,
       backgroundColor: '#fe9400',
-
+    },
+    title:{
+      ...base_style.title,
+      color:'#f2f1f6'
+    },
+    searchContainer:{
+      ...base_style.searchContainer,
+      backgroundColor: '#dedddc',
     }
   },
+
+
 
 }
 

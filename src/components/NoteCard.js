@@ -14,6 +14,8 @@ import { changeNoteColor } from "../store/localStorageSlicer/noteSlice";
 
 function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' }) {
 
+  
+
     const dispatch = useDispatch()
 
     const firstLine = message.note.split('\n')[0];
@@ -36,14 +38,18 @@ function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' }) {
      const noteColor = useSelector((state)=> state.notes.noteColor)
      const nightMode = useSelector((state)=> state.notes.nightMode)
 
+  
 
 
-     useEffect(()=> {
-        if(!nightMode){
+     useEffect(()=> {   //nightColor = '' ise (uygulama ilk açıldığında mesela)
+        if(!noteColor && !nightMode){
             dispatch(changeNoteColor('white'))
         }
-        else dispatch(changeNoteColor('#171515'))
-     },[nightMode])
+        if(!noteColor && nightMode){
+         dispatch(changeNoteColor('#171515'))
+        }
+
+     },[noteColor]) 
 
 
     
@@ -64,23 +70,33 @@ function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' }) {
                         { marginLeft: 65 }, 
                         noteColor=='#171515' && {color:'white'}, 
                         noteColor=='white' && {color:'#171515'}]}>{firstLine}</Text>
-                    <Text style={styles[theme].date}>{formattedDate}</Text>
+                    <Text style={[
+                        styles[theme].date,
+                        noteColor=='#171515' && {color:'white'} , 
+                        noteColor=='white' && {color:'#171515'}]}>{formattedDate}</Text>
                 </View>
                 :
+
+                
                
-                <View style={[styles[theme].container , {backgroundColor:noteColor}]}>
+                <View style={[styles[theme].container , {backgroundColor:noteColor}]} onPress={()=> console.log('bastın')}>
                     {isPinned && <AntIcon size={15} color={'#f20707'} name={'pushpin'} style={{ position: 'absolute', zIndex: 1, top: 0, left: 0, opacity:0.5 }}/> }
                     <Text numberOfLines={1} style={ [
-                        styles[theme].note , 
+                        styles[theme].note ,              
                         noteColor=='#171515' && {color:'white'} , 
                         noteColor=='white' && {color:'#171515'}]}>{firstLine}</Text>
-                    <Text style={styles[theme].date}>{formattedDate}</Text>
+                    <Text 
+                    style={[
+                        styles[theme].date,
+                        noteColor=='#171515' && {color:'white'} , 
+                        noteColor=='white' && {color:'#171515'}]}>{formattedDate}</Text>
                     { /* longPressStatus ? <LongPressComponent/> : handleCloseLongPress() */}
                 </View>
 
 
             }
-        </TouchableHighlight>
+                        </TouchableHighlight>
+
     )
 }
 
@@ -91,18 +107,16 @@ const base_style = {
         flexDirection: "row",
         height: 75,
         marginVertical: 10,
-        marginHorizontal: 5,
-        borderWidth: 1,
-        borderBottomWidth: 2,
-        borderTopWidth: 2,
+        marginHorizontal: 10,
+        
         borderRadius: 10,
     },
 
     note: {
         flex: 1,
         fontSize:20,
-        fontWeight: 'bold',
         marginLeft: 10,
+        
     },
     date: {
         marginRight: 5,

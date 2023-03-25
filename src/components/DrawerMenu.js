@@ -9,7 +9,7 @@ import FoIcons from 'react-native-vector-icons/Fontisto'
 
 import { handleDrawerStatus,closeDrawer,openColorModal } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
 import { useDispatch,useSelector } from 'react-redux';
-import { changeNightMode } from '../store/localStorageSlicer/noteSlice';
+import { changeNightMode, changeNoteColor } from '../store/localStorageSlicer/noteSlice';
 
 function DrawerMenu({handleBulkSelection}) {  //notları seç'i prop alarak yapmışız ama burdanda yapılabilirdi
 //    backgroundColor: '#5359D1',
@@ -17,8 +17,18 @@ function DrawerMenu({handleBulkSelection}) {  //notları seç'i prop alarak yapm
     const dispatch = useDispatch()
 
     const [nightMode, setNightMode] = useState(false)  
+     
+    const noteColor = useSelector((state)=> state.notes.noteColor)
 
     const handleNightMode=  () => {
+        if( noteColor=='white'){   
+          dispatch(changeNoteColor('#171515'))
+        }
+        if(noteColor=='#171515'){
+          dispatch(changeNoteColor('white'))
+        }
+        //gece-gündüz modu değişirken not rengindeki siyah ve beyaza özel değişim
+
         setNightMode(!nightMode)
         dispatch(changeNightMode())
     }
