@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, View, TextInput,TouchableOpacity, FlatList, TouchableWithoutFeedback, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Share,Text, View, TextInput,TouchableOpacity, FlatList, TouchableWithoutFeedback, Dimensions, Alert } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage, hideMessage } from "react-native-flash-message";
@@ -12,39 +12,12 @@ import IONIcon from 'react-native-vector-icons/Ionicons'
 import IconButton from '../components/IconButton';
 import NoteCard from '../components/NoteCard';
 import DrawerMenu from '../components/DrawerMenu';
+import Header from '../components/Header';
 import { deleteNote, pinNote, unPinNote, deleteBulky } from '../store/localStorageSlicer/noteSlice';
 import { changeBoole2, setDrawerOpen, closeDrawer, closeColorModal,handleDrawerStatus, handleBulkDeleteStatus } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
 import ColorPaletteModal from '../components/ColorPaletteModal';
-import {  } from 'react-native-gesture-handler';
 import store from '../store/store';
 
-function Header({onText}) {  //Notebook'un en üstünde listelencek (title+searchbar) flatlistin ListHeaderComponent özelliği ile 
- 
-  const [colorMode, setColorMode] = useState('light')
-  const lightOrNightMode = useSelector((state) => state.notes.nightMode)
-
-  useEffect(() => {
-    if (!lightOrNightMode) {
-      setColorMode('light')
-    } else {
-      setColorMode('dark')
-
-    }
-  }, [lightOrNightMode])
-
-  return(
-   <View>
-
-      <Text style={styles[colorMode].title}>Notlar</Text> 
-
-      <View style={styles[colorMode].searchContainer}>
-      <Icon name={'search1'} color={'grey'} size={20} />
-
-      <TextInput style={styles[colorMode].search} placeholder={'Arayın'} onChangeText={onText} />
-      </View>
-    </View>
-  )
-}
 
 
 function Notes({ navigation }) {
@@ -59,7 +32,6 @@ function Notes({ navigation }) {
   const allNotes = pinnedNotes.concat(note)                          //1+2 ( pinned note hep en üstte , pinned olmayanlarsa kendi kendine sortlandı)
   const [list, setList] = useState(allNotes)                          //en son flatliste bunu verdik search bar ile uyumlu olması  için        
   
-
 
   useEffect(() => {                                                   //store.subscribe ile herhangi değişiklikte yakaladık, başka türlü olmadı
     const unsubscribe = store.subscribe(() => {
@@ -81,7 +53,7 @@ function Notes({ navigation }) {
 
 
   //////////NOTU SİLME////////////////
-  const handleDelete = (item) => {
+  const handleDelete = (rowMap,item) => {
     Alert.alert('Notu sil', 'Notu silmek istediğinizden emin misiniz?', [
       {
         text: 'Vazgeç',
@@ -90,6 +62,7 @@ function Notes({ navigation }) {
       {
         text: 'Sil',
         onPress: () => {
+          closeRow(rowMap,item.id)
           dispatch(deleteNote(item.id))
         }
       },
@@ -108,12 +81,15 @@ function Notes({ navigation }) {
     setPinned(!isPinned)
     dispatch(pinNote(item.id))
 
+
   }
 
   //////////NOTU SABİTLEMEDEN ÇIKARMA////////////////
   const handleUnPin = (item) => {
     setPinned(!isPinned)
     dispatch(unPinNote(item.id))
+
+   // const index = allNotes.findIndex(x => x.id === item.id)
   }
 
   //////////TOPLU SİLME MODUNU AÇMA (useEffect) ve REDUXSTATE'lerini Güncelleme////////////////
@@ -219,15 +195,27 @@ function Notes({ navigation }) {
   }, [states2])
 
 
+  ////////////SHARE ///////////////////
+  const  onShare = async (note) => {
+    try {
+      const result = await Share.share({
+        message:note      
+      });
+      
+  }
+  catch(error) {
+      Alert.alert(error.message);
+  }
+}
+
 ///////////////////////////////////////////////////////
   const drawerMenu = useSelector((state) => state.notLocalNotes.isDrawerOpen)
-
 
 
   return (
     <>
       <View style={styles[colorMode].container}>
-
+      
 
         {drawerMenu ? <DrawerMenu handleBulkSelection={handleBulkDelete} /> : null}
 
@@ -240,12 +228,13 @@ function Notes({ navigation }) {
         <SwipeListView data={list}
           renderItem={({ item }) => <NoteCard message={item} bulkDelete={bulkDelete} isPinned={item.isPinned} theme={colorMode} onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
           ListHeaderComponent={<Header onText={handleSearchBar}/>}
+          keyExtractor={list => list.id}
           renderHiddenItem={(data, rowMap) => (
             <View style={styles[colorMode].rowBack}>
               {
                 data.item.isPinned == false ?     //DELETE ICON - ACCORDING TO PIN STATUS
                   <Icon
-                    onPress={() => handleDelete(data.item)}
+                    onPress={() => handleDelete( data.item)}
                     name={'delete'} color='white' size={30} style={styles[colorMode].trash}
                   >
                   </Icon>
@@ -266,16 +255,24 @@ function Notes({ navigation }) {
                   </MCIIcon>
                   :
                   <MCIIcon
-                    onPress={() => handleUnPin(data.item)}
+                    onPress={() => handleUnPin( data.item)}
                     name={'pin-off'} color='white' size={30} style={styles[colorMode].pin}
                   >
                   </MCIIcon>
               }
+
+              <IONIcon onPress={() => onShare(data.item.note)}
+              name={'share-outline'} color='white' size={30} style={styles[colorMode].share}>
+                
+              </IONIcon>
             </View>
           )}
-          leftOpenValue={115}
-          rightOpenValue={0}
-        />
+          closeOnRowBeginSwipe
+          closeOnRowOpen
+          leftOpenValue={110}
+          rightOpenValue={-60}
+        
+          />
 
         <ColorPaletteModal
           visible={isModalVisible}
@@ -292,9 +289,6 @@ function Notes({ navigation }) {
             color={'white'}
             style={{ backgroundColor: 'red' }}
             onPress={confirmBulkDelete} />}
-
-
-
 
       </View>
 
@@ -320,15 +314,25 @@ const base_style = {
 
   },
   trash: {
-    paddingVertical: 18.2,
+    paddingVertical: 17,
     width: 55,
     textAlign: 'center',
-
+    backgroundColor: '#fd3b31',
   },
   pin: {
     width: 55,
     textAlign: 'center',
-    paddingVertical: 18
+    paddingVertical: 17,
+    backgroundColor: '#fe9400',
+  },
+  share: {
+    position:'absolute',
+    paddingVertical: 17,
+    width: 55,
+    right:-22,
+    textAlign: 'center',
+    backgroundColor: '#787aff',
+
   },
   cancelBulkSelection: {
     marginLeft: 20,
@@ -368,14 +372,6 @@ const styles = {
       ...base_style.rowBack,
       backgroundColor: '#f2f2f2',
     },
-    trash: {
-      ...base_style.trash,
-      backgroundColor: '#fd3b31',
-    },
-    pin: {
-      ...base_style.pin,
-      backgroundColor: '#fe9400',
-    },
     title:{
       ...base_style.title,
       color:'black'
@@ -395,14 +391,7 @@ const styles = {
       ...base_style.rowBack,
       backgroundColor: '#423d3d',
     },
-    trash: {
-      ...base_style.trash,
-      backgroundColor: '#fd3b31',
-    },
-    pin: {
-      ...base_style.pin,
-      backgroundColor: '#fe9400',
-    },
+
     title:{
       ...base_style.title,
       color:'#f2f1f6'

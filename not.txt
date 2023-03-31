@@ -29,37 +29,20 @@ ikinci bi slice denenebilir yeni store yeni Provider
 -notların renk değişiklikleri seçenekleri done
 
 
--longpress component * burda kaldık reduxtaki state'i true olunca tüm notlarda açıldı sadece 1 tane açılmalı
--tarihe göre sıralama
--mesajı kaydırma ile iş bitince otomatik kapansın 
--plus butonun kaybolması ve bulk selectedsa mesjaın kayması animasyonlu olsun
+-share button done
+-drawer'e tarihe göre sıralama vs ekleme ile açılır menü ekleme (accordion menu) done
 
+-reanimated paketi ile uygulamaya animasyon ekleme (plus butonunun kaybolması bulk selectedsa mesajın kayması vs)
+-nota longPress basınca yeni menu çıkarma
+-bildirim onesignal ile
 
+++++BUG not kaydırma ile iş bitince kapansın / pinleme de index değiştiği için sorun çıktı doc da başkasına tıklanınca diğerinin kapanmasnı anlamadık ? https://snack.expo.dev/@jemise111/react-native-swipe-list-view
 ++++BUG toplu silmede tüm mesaja tıklayınca icon'un çalışması
 ++++BUG uygulama resmi yok canlıda
 ++++BUG kaydet boşluk olunca da çalışıyo
 ++++BUG toplu silmede hiç bişey seçili değilse de silinebiliyor
+-BUG Search de işlem yapılınca search silinmiyo ama bütün hepsi geliyor
 
-  <>
-    <View>
-        <SwipeListView data={note} 
-        style={{height:Dimensions.get('window').height/1.2 /*flatliste height vererek plusbutton'u position:absolute gibi kullanabildik*/}}
-        renderItem={({item}) => <NoteCard message={item} onPress={() => navigateToNote(item.note, item.id)} />}
-        renderHiddenItem={ (data, rowMap) => (
-          <View style={styles.rowBack}>
-              <Text>Left</Text>
-              <Text>Right</Text>
-          </View>
-      )} 
-      leftOpenValue={75}
-      rightOpenValue={-75}
-      />
-        
-        <PlusButton icon={'plus'} onPress={navigateToWriter} />
-
-      </View>
-
-      </>
 
 
 
@@ -72,7 +55,7 @@ ikinci bi slice denenebilir yeni store yeni Provider
       --------------------------------
       *prop'a default değer => mesela bir componente (ör: vectorIcons'dan bir Icon) oluştururken <Icon size={size || 24} color={color || colors.DARK} />
       --------------------------------
-      *f2 = toplu variable name'ini değiştirme, toplu aynı kelimeleri seçip aynı değişikleri (taşıma,silme ekleme vs) yapma = ctrl + d
+      *fn+f2 = toplu variable name'ini değiştirme, toplu aynı kelimeleri seçip aynı değişikleri (taşıma,silme ekleme vs) yapma = ctrl + d
       --------------------------------
       *saate göre günaydın iyi akşamlar yazdırabilme = new Date().getHours()    =>>> 21 17 06 vs dondurur günaydın iyi akşamlar mesajı böyle halledilir
       --------------------------------
@@ -153,72 +136,3 @@ ikinci bi slice denenebilir yeni store yeni Provider
     * Flatlist yatay yapma =>  numColumns={3} diyip flatlist'i yatay sütünsal mantıkla kullanabilmek için keyExtractor'a id den sonra toString() verdik ve bug gitti (ColorPaletteComponent.js) (4.video, 13.11)
     * flatlist arasına seperator koyma =  <FlatList .. ItemSeparatorComponent={renderSeperator} />      const renderSeperator = () => <View style={styles.seperator} />
 
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const base_style = {
-  container: {
-    flex:1
-  },
-  input_container: {
-    height:Dimensions.get('window').height/1
-  },
-  input: {
-    height:Dimensions.get('window').height/1
-  }
-}
-
-
-const styles = {
-
-  light: StyleSheet.create({
-    ...base_style,
-    input:{
-      ...base_style.input,
-      backgroundColor:'white',
-  
-    },
-    input_container:{
-      ...base_style.input_container,
-      backgroundColor:'white',
-    },
-    button_container:{
-      backgroundColor:'white'
-    }
-  }),
-
-  dark: {
-    ...base_style,
-    input:{
-      ...base_style.input,
-      backgroundColor:'green',
-      color:'yellow',
-  
-    },
-    input_container:{
-      ...base_style.input_container,
-      backgroundColor:'red',
-    },
-    button_container:{
-      backgroundColor:'black'
-    }
-  }
-}
-                

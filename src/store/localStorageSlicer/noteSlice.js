@@ -8,7 +8,8 @@ export const noteSlice = createSlice({
     notes: [],
     pinnedNotes: [],
     nightMode: false,
-    noteColor: ''
+    noteColor: '',
+    sortMethod: 'newFirst'
   },
   reducers: {
     
@@ -66,10 +67,17 @@ export const noteSlice = createSlice({
 
     changeNightMode: (state,action) => {
       state.nightMode = !state.nightMode
+    
     }, 
 
     changeNoteColor: (state,action) => {
       state.noteColor = action.payload
+    },
+
+    changeSortMethod: (state,action) => {
+      state.sortMethod = action.payload
+      sortNotes(state)
+
     }
 
   }
@@ -79,14 +87,22 @@ export const noteSlice = createSlice({
 
 
 const sortNotes = (state) => {
+  if(state.sortMethod == 'newFirst') {
   state.notes = state.notes.sort(function(a, b) {     // tarihine göre listele
     return (a.date > b.date) ? -1 : ((a.date < b.date) ? 1 : 0);
 })
+  }
+  if(state.sortMethod=='oldFirst') {
+    state.notes = state.notes.sort(function(a, b) {     // tarihine göre listele
+      return (b.date > a.date) ? -1 : ((b.date < a.date) ? 1 : 0);
+  })
+  }
 }
 
 
 
 
-export const { addNote, updateNote, deleteNote, deleteBulky, pinNote, unPinNote, updatePinnedNote,changeNightMode,changeNoteColor} = noteSlice.actions
+
+export const { addNote, updateNote, deleteNote, deleteBulky, pinNote, unPinNote, updatePinnedNote,changeNightMode,changeNoteColor,changeSortMethod} = noteSlice.actions
 
 export default noteSlice.reducer
