@@ -12,7 +12,7 @@ import { useDispatch ,useSelector} from "react-redux";
 import { pushBulkDelete,popBulkDelete, handleLongPressStatus } from "../store/notLocalStorageSlicer/nonLocalNoteSlice";
 import { changeNoteColor } from "../store/localStorageSlicer/noteSlice";
 
-function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' }) {
+function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' ,handleLongPress}) {
 
   
 
@@ -55,7 +55,7 @@ function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' }) {
     
     return (
 
-        <TouchableHighlight onPress={bulkDelete && !isPinned ? handleIcon : onPress} activeOpacity={0.5} underlayColor="#DDDDDD">
+        <TouchableHighlight onPress={bulkDelete && !isPinned ? handleIcon : onPress} onLongPress={handleLongPress} activeOpacity={0.5} underlayColor="#DDDDDD">
             {bulkDelete && !isPinned ?  //toplu seçim açık mı ve not pinsiz mi ?
                 <View style={[styles[theme].container , {backgroundColor:noteColor,}  ]}>
 

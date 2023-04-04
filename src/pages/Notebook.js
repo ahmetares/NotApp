@@ -17,6 +17,8 @@ import { deleteNote, pinNote, unPinNote, deleteBulky } from '../store/localStora
 import { changeBoole2, setDrawerOpen, closeDrawer, closeColorModal,handleDrawerStatus, handleBulkDeleteStatus } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
 import ColorPaletteModal from '../components/ColorPaletteModal';
 import store from '../store/store';
+import LongPressComponent from '../components/LongPressComponent';
+import LongPressModal from '../components/LongPressModal';
 
 
 
@@ -50,10 +52,14 @@ function Notes({ navigation }) {
   const navigateToNote = (note, id, isPinned) => {
     navigation.navigate('Not', { note, id, isPinned })
   }
+  const navigateToNoteFromModal = (note, id, isPinned) => {
+    setLongPressModal(false)
+    navigation.navigate('Not', { note, id, isPinned })
+  }
 
 
   //////////NOTU SİLME////////////////
-  const handleDelete = (rowMap,item) => {
+  const handleDelete = (id) => {
     Alert.alert('Notu sil', 'Notu silmek istediğinizden emin misiniz?', [
       {
         text: 'Vazgeç',
@@ -62,14 +68,15 @@ function Notes({ navigation }) {
       {
         text: 'Sil',
         onPress: () => {
-          closeRow(rowMap,item.id)
-          dispatch(deleteNote(item.id))
+          dispatch(deleteNote(id))
+          setLongPressModal(false)
+
         }
       },
     ])
   }
   //////////SABİT NOTU SİLEMEME////////////////
-  const handleUnDelete = (item) => {
+  const handleUnDelete = () => {
     showMessage({
       message: "Sabitlenmiş notlar silinemez",
       type: "danger",
@@ -77,18 +84,17 @@ function Notes({ navigation }) {
   }
 
   //////////NOT SABİTLEME////////////////
-  const handlePin = (item) => {
+  const handlePin = (id) => {
     setPinned(!isPinned)
-    dispatch(pinNote(item.id))
-
-
+    dispatch(pinNote(id))
+    setLongPressModal(false)
   }
 
   //////////NOTU SABİTLEMEDEN ÇIKARMA////////////////
-  const handleUnPin = (item) => {
+  const handleUnPin = (id) => {
     setPinned(!isPinned)
-    dispatch(unPinNote(item.id))
-
+    dispatch(unPinNote(id))
+    setLongPressModal(false)
    // const index = allNotes.findIndex(x => x.id === item.id)
   }
 
@@ -164,7 +170,29 @@ function Notes({ navigation }) {
                                       //colorModalStatus Renkleri seç'e basınca true olur
   },[colorModalStatus])
 
+//////////////LONG PRESS MODAL İŞLEMLERi///////////////////
 
+const [longPressModal, setLongPressModal] = useState(false)
+const [longPressedNote, setLongPressedNote] = useState('')
+const [longPressedId, setLongPressedId] = useState(null)
+const [longPressedNotePinned, setLongPressedNotePinned] = useState(null)
+
+
+const handleLongPress = (note,id,isPinned) => {
+  console.log('uzun baston')
+  setLongPressModal(true)
+  setLongPressedNote(note)
+  setLongPressedId(id)
+  setLongPressedNotePinned(isPinned)
+}
+
+const handleCloseLongPressModal = () => {
+  console.log('closed')
+  setLongPressModal(false)
+  setLongPressedNote('')
+  setLongPressedId(null)
+  setLongPressedNotePinned(null)
+}
 
   //////////SEARCH İŞLEMLERİ///////////////////////////
 
@@ -181,6 +209,19 @@ function Notes({ navigation }) {
 
     }
 
+  ////////////SHARE ///////////////////
+  const  onShare = async (note) => {
+    try {
+      const result = await Share.share({
+        message:note      
+      });
+      
+  }
+  catch(error) {
+      Alert.alert(error.message);
+  }
+}
+
 
 
 ////////////////////STATE KONTROLÜ//////////////////////////////////
@@ -195,18 +236,7 @@ function Notes({ navigation }) {
   }, [states2])
 
 
-  ////////////SHARE ///////////////////
-  const  onShare = async (note) => {
-    try {
-      const result = await Share.share({
-        message:note      
-      });
-      
-  }
-  catch(error) {
-      Alert.alert(error.message);
-  }
-}
+
 
 ///////////////////////////////////////////////////////
   const drawerMenu = useSelector((state) => state.notLocalNotes.isDrawerOpen)
@@ -225,22 +255,34 @@ function Notes({ navigation }) {
           </TouchableWithoutFeedback> : null}
           
 
-        <SwipeListView data={list}
-          renderItem={({ item }) => <NoteCard message={item} bulkDelete={bulkDelete} isPinned={item.isPinned} theme={colorMode} onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
+        <SwipeListView 
+          data={list}
+  
+          renderItem={({ item }) => 
+          <NoteCard 
+          message={item} 
+          bulkDelete={bulkDelete} 
+          isPinned={item.isPinned} 
+          theme={colorMode} 
+          handleLongPress={() => handleLongPress(item.note,item.id,item.isPinned)} 
+          onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
+
           ListHeaderComponent={<Header onText={handleSearchBar}/>}
+          
           keyExtractor={list => list.id}
+          
           renderHiddenItem={(data, rowMap) => (
             <View style={styles[colorMode].rowBack}>
               {
                 data.item.isPinned == false ?     //DELETE ICON - ACCORDING TO PIN STATUS
                   <Icon
-                    onPress={() => handleDelete( data.item)}
+                    onPress={() => handleDelete( data.item.id)}
                     name={'delete'} color='white' size={30} style={styles[colorMode].trash}
                   >
                   </Icon>
                   :
                   <IONIcon
-                    onPress={() => handleUnDelete(data.item)}
+                    onPress={() => handleUnDelete(data.item.id)}
                     name={'trash-bin'} color='white' size={30} style={[styles[colorMode].trash, { backgroundColor: 'black' }]}
                   >
                   </IONIcon>
@@ -249,13 +291,13 @@ function Notes({ navigation }) {
               {
                 data.item.isPinned == false ?    //PIN ICON - ACCORDING TO PIN STATUS
                   <MCIIcon
-                    onPress={() => handlePin(data.item)}
+                    onPress={() => handlePin(data.item.id)}
                     name={'pin'} color='white' size={30} style={styles[colorMode].pin}
                   >
                   </MCIIcon>
                   :
                   <MCIIcon
-                    onPress={() => handleUnPin( data.item)}
+                    onPress={() => handleUnPin( data.item.id)}
                     name={'pin-off'} color='white' size={30} style={styles[colorMode].pin}
                   >
                   </MCIIcon>
@@ -277,6 +319,16 @@ function Notes({ navigation }) {
         <ColorPaletteModal
           visible={isModalVisible}
           onClose={handleCloseModal}
+        />
+
+        <LongPressModal 
+        visible= {longPressModal}
+        onClose = {handleCloseLongPressModal}
+        note={longPressedNote}
+        isPinned={longPressedNotePinned}
+        navigateToNote={()=> navigateToNoteFromModal(longPressedNote,longPressedId,longPressedNotePinned)}
+        pinFromModal = {longPressedNotePinned ? ()=> handleUnPin(longPressedId) : ()=> handlePin(longPressedId)}
+        deleteFromModal = {() => handleDelete(longPressedId)}
         />
 
         {!bulkDelete ?            //PLUS or BULK DELETE BUTTON
@@ -301,7 +353,8 @@ function Notes({ navigation }) {
 
 const base_style = {
   container: {
-    flex:1
+    flex:1,
+    
   },
   rowBack: {
     alignItems: 'center',

@@ -10,7 +10,6 @@ export const nonLocalNoteSlice = createSlice({
     isDrawerOpen: false,
     isLongPressOpen: false,
     isColorModalOpen:false,
-  
 
   },
   reducers: {

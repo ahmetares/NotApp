@@ -26,7 +26,7 @@ export const noteSlice = createSlice({
     },
     deleteNote: (state,action) => {
       console.log(action.payload)
-      state.notes = state.notes.filter((x) => x.id != action.payload)
+      state.notes = state.notes.filter((x) => x.id !== action.payload)
       //action.payload (id) 'si ile notların id'si aynı olmayanları filtrele
 
     },
@@ -40,6 +40,7 @@ export const noteSlice = createSlice({
     },
 
     pinNote: (state,action) => {
+      console.log(action.payload)
       changedNote = state.notes.find( item => item.id === action.payload) 
       changedNote.isPinned = true
 

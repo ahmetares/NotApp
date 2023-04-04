@@ -28,13 +28,19 @@ ikinci bi slice denenebilir yeni store yeni Provider
 -search done
 -notların renk değişiklikleri seçenekleri done
 
-
 -share button done
 -drawer'e tarihe göre sıralama vs ekleme ile açılır menü ekleme (accordion menu) done
+-bildirim onesignal ile done gibi
+
+-nota longPress basınca yeni menu çıkarma done sadece share kaldı
 
 -reanimated paketi ile uygulamaya animasyon ekleme (plus butonunun kaybolması bulk selectedsa mesajın kayması vs)
--nota longPress basınca yeni menu çıkarma
--bildirim onesignal ile
+-share'i bitir
+-long press açılınca arkası blurlansın
+-once en yeni once en yakın ikiye bölünmüş telefonda ui kaymış
+-drawer menusu modal olsun
+-arama kısmı üste alta kayıyor
+-notları seç hiçbişey seçmeyince yine sildi
 
 ++++BUG not kaydırma ile iş bitince kapansın / pinleme de index değiştiği için sorun çıktı doc da başkasına tıklanınca diğerinin kapanmasnı anlamadık ? https://snack.expo.dev/@jemise111/react-native-swipe-list-view
 ++++BUG toplu silmede tüm mesaja tıklayınca icon'un çalışması

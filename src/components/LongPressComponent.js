@@ -1,15 +1,35 @@
 import React from "react";
-import { StyleSheet, View,TouchableHighlight, TouchableOpacity, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View,TouchableHighlight, TouchableOpacity, Text, TouchableWithoutFeedback, Dimensions } from "react-native"
+import { TextInput } from "react-native-gesture-handler";
 import Icon from 'react-native-vector-icons/AntDesign' 
 import MCIIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export default function LongPressComponent(){
 
+
     return(
         <View style={styles.container}>
+            <View style={styles.inputContainer}>
+                <TextInput editable={false} value="aşsdkaşslkd">
+                </TextInput>
+            </View>
+            <View style={styles.optionContainer}>
             <TouchableOpacity onPress={null}>
              <View style={styles.optionWrapper}>
             <Text style={styles.option}>Notu Sabitle</Text>
+            <MCIIcon 
+                onPress={null}
+                name={'pin'} color='black' size={18} style={styles.pin}
+                >
+                </MCIIcon> 
+            </View>
+            </TouchableOpacity>
+
+            <View style={styles.seperator}></View>
+
+            <TouchableOpacity onPress={null}>
+             <View style={styles.optionWrapper}>
+            <Text style={styles.option}>Notu Paylaş</Text>
             <MCIIcon 
                 onPress={null}
                 name={'pin'} color='black' size={18} style={styles.pin}
@@ -31,7 +51,7 @@ export default function LongPressComponent(){
             </View>
             </TouchableOpacity>
 
-            
+            </View>
 
         </View>
     )
@@ -41,13 +61,22 @@ export default function LongPressComponent(){
 const styles = StyleSheet.create({
 
     container: {
-        backgroundColor:'grey',
-        width:200,
-        height:100,
+        backgroundColor:'green',
         borderRadius:9,
-        marginLeft:10,
-        marginTop:10
+        alignItems:'center',
+     
         
+    },
+    inputContainer:{
+        backgroundColor:'grey',
+        height:Dimensions.get('window').height/1.8,
+        width:Dimensions.get('window').width/1.2,
+        borderRadius:10,
+    },
+    optionContainer:{
+        marginTop:10,
+        backgroundColor:'grey',
+        height:200,
     },
     optionWrapper:{
         display:'flex',
