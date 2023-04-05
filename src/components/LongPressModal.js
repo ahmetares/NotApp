@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import MCIIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IONIcon from 'react-native-vector-icons/Ionicons';
 
-export default function LongPressModal({visible, onClose, note,navigateToNote,pinFromModal,deleteFromModal,isPinned}) {
+export default function LongPressModal({visible, onClose, note,isPinned,navigateToNote,pinFromModal,deleteFromModal,shareFromModal}) {
 
 
   return (
@@ -60,7 +60,7 @@ export default function LongPressModal({visible, onClose, note,navigateToNote,pi
 
         <View style={styles.seperator}></View>
 
-        <TouchableOpacity onPress={null}>
+        <TouchableOpacity onPress={shareFromModal}>
           <View style={styles.optionWrapper}>
             <Text style={styles.option}>Notu Paylaş</Text>
             <IONIcon

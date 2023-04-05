@@ -165,7 +165,8 @@ const styles = StyleSheet.create({
   seperator: {
     borderWidth: 0.6,
     borderColor: '#e0e0e0',
-    marginVertical: 3
+    marginVertical: 3,
+    
   },
   
   accordionOptionWrapper:{
@@ -173,12 +174,17 @@ const styles = StyleSheet.create({
 
   },
   accordionOption:{
+    flex:1,
     marginLeft:15,
-    borderBottomWidth: 1,
     borderColor: '#e0e0e0',
     marginVertical: 1,
-    width:85
   },
+
+  accordionSeperator:{
+    borderWidth: 0.7,
+    borderColor: '#e0e0e0',
+    marginVertical: 0.5,
+  }
 
 
 });

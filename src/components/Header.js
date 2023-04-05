@@ -26,7 +26,7 @@ export default function Header({onText}) {  //Notebook'un en üstünde listelenc
         <View style={styles[colorMode].searchContainer}>
         <Icon name={'search1'} color={'grey'} size={20} />
   
-        <TextInput style={styles[colorMode].search} placeholder={'Arayın'} onChangeText={onText} />
+        <TextInput  style={styles[colorMode].search} placeholder={'Arayın'} onChangeText={onText} />
         </View>
       </View>
     )
@@ -50,12 +50,11 @@ export default function Header({onText}) {  //Notebook'un en üstünde listelenc
         marginHorizontal:10,
       },
       search:{
-        marginBottom:-3,
-        fontSize:15,
+        paddingVertical:0,
+        fontSize:12,
         marginLeft:5,
-        height:35,
-        flex:1
-    
+        height:33,
+        flex:1    
       }
   }
 

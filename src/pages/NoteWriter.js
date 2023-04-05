@@ -19,14 +19,12 @@ function NoteWriter({navigation}) {
   const lightOrNightMode =  useSelector((state)=> state.notes.nightMode)
 
     useEffect(()=> {
-      console.log('modumyz bu' , lightOrNightMode)
       if (!lightOrNightMode) {
          setColorMode('light')
       } else {
         setColorMode('dark')
     
       }
-      console.log('comode' , colorMode)
     
      },[lightOrNightMode])
 

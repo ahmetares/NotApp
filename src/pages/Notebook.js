@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/AntDesign' // ekstra npm i --save-dev @types/react-native-vector-icons  yapınca calıstı ayrıca bu paket için android ve iosda konfig. yapılmalı
 import MCIIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import IONIcon from 'react-native-vector-icons/Ionicons'
+import { BlurView, VibrancyView } from "@react-native-community/blur";
 
 import IconButton from '../components/IconButton';
 import NoteCard from '../components/NoteCard';
@@ -168,7 +169,7 @@ function Notes({ navigation }) {
   useEffect(()=> {
     setModalVisible(colorModalStatus)  //useState'deki state'in açık olup olmaması Reduxtaki colorModalStatus'e göre değişir
                                       //colorModalStatus Renkleri seç'e basınca true olur
-  },[colorModalStatus])
+  },[colorModalStatus])               //colorModal drawer'dan geldiği için state kontrolünü redux üzerinden yaptık, longPressde Notebook üzerinden useState ile yaptık
 
 //////////////LONG PRESS MODAL İŞLEMLERi///////////////////
 
@@ -179,7 +180,6 @@ const [longPressedNotePinned, setLongPressedNotePinned] = useState(null)
 
 
 const handleLongPress = (note,id,isPinned) => {
-  console.log('uzun baston')
   setLongPressModal(true)
   setLongPressedNote(note)
   setLongPressedId(id)
@@ -187,7 +187,6 @@ const handleLongPress = (note,id,isPinned) => {
 }
 
 const handleCloseLongPressModal = () => {
-  console.log('closed')
   setLongPressModal(false)
   setLongPressedNote('')
   setLongPressedId(null)
@@ -321,6 +320,8 @@ const handleCloseLongPressModal = () => {
           onClose={handleCloseModal}
         />
 
+        {longPressModal && <BlurView  blurAmount={4}  blurType="light" style={{position:'absolute', left:0,right:0,top:0,bottom:0}}  />}
+
         <LongPressModal 
         visible= {longPressModal}
         onClose = {handleCloseLongPressModal}
@@ -329,6 +330,7 @@ const handleCloseLongPressModal = () => {
         navigateToNote={()=> navigateToNoteFromModal(longPressedNote,longPressedId,longPressedNotePinned)}
         pinFromModal = {longPressedNotePinned ? ()=> handleUnPin(longPressedId) : ()=> handlePin(longPressedId)}
         deleteFromModal = {() => handleDelete(longPressedId)}
+        shareFromModal={() => onShare(longPressedNote)}
         />
 
         {!bulkDelete ?            //PLUS or BULK DELETE BUTTON
