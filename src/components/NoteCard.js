@@ -1,4 +1,4 @@
-import { StyleSheet, View,TouchableHighlight, TouchableOpacity, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet,Dimensions, View,TouchableHighlight, TouchableOpacity, Text, TouchableWithoutFeedback } from "react-native"
 import { useEffect, useState } from "react";
 
 import { format, formatDistance, formatRelative, parseISO, subDays } from 'date-fns'
@@ -35,15 +35,18 @@ function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' ,handle
         
     }
 
+  
+ 
+
      const noteColor = useSelector((state)=> state.notes.noteColor)
      const nightMode = useSelector((state)=> state.notes.nightMode)
-
-  
-
+     const isListView = useSelector((state) => state.notes.listView)
+   
 
      useEffect(()=> {   //nightColor = '' ise (uygulama ilk açıldığında mesela)
         if(!noteColor && !nightMode){
             dispatch(changeNoteColor('white'))
+
         }
         if(!noteColor && nightMode){
          dispatch(changeNoteColor('#171515'))
@@ -56,14 +59,14 @@ function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' ,handle
     return (
 
         <TouchableHighlight onPress={bulkDelete && !isPinned ? handleIcon : onPress} onLongPress={handleLongPress} activeOpacity={0.5} underlayColor="#DDDDDD">
-            {bulkDelete && !isPinned ?  //toplu seçim açık mı ve not pinsiz mi ?
-                <View style={[styles[theme].container , {backgroundColor:noteColor,}  ]}>
+        {bulkDelete && !isPinned ?  //toplu seçim açık mı ve not pinsiz mi ?
+            <View style={[styles[theme].container , {backgroundColor:noteColor,} , !isListView && {width: Dimensions.get('window').width/2-20}  ]}>
 
-                    {!isSelected ?  //yuvarlak seçildimi
-                        <FontAIcon size={30} color={'grey'} name={'circle-thin'} onPress={handleIcon} style={{ width:100,position: 'absolute', zIndex: 1, top: 22, left: 20, opacity:0.5 }} />
-                        :
-                        <MCIcon size={30} color={'red'} name={'delete-circle'} onPress={handleIcon} style={{ position: 'absolute', zIndex: 1, top: 22, left: 20 }} />
-                    }
+                {!isSelected ?  //yuvarlak seçildimi
+                    <FontAIcon size={30} color={'grey'} name={'circle-thin'} onPress={handleIcon} style={{ width:100,position: 'absolute', zIndex: 1, top: 22, left: 20, opacity:0.5 }} />
+                    :
+                    <MCIcon size={30} color={'red'} name={'delete-circle'} onPress={handleIcon} style={{ position: 'absolute', zIndex: 1, top: 22, left: 20 }} />
+                }
 
                     <Text numberOfLines={1} style={[
                         styles[theme].note, 
@@ -79,7 +82,7 @@ function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' ,handle
 
                 
                
-                <View style={[styles[theme].container , {backgroundColor:noteColor}]} onPress={()=> console.log('bastın')}>
+                <View style={[styles[theme].container,  {backgroundColor:noteColor}, !isListView && {width: Dimensions.get('window').width/2-20}]} onPress={()=> console.log('bastın')}>
                     {isPinned && <AntIcon size={15} color={'#f20707'} name={'pushpin'} style={{ position: 'absolute', zIndex: 1, top: 0, left: 0, opacity:0.5 }}/> }
                     <Text numberOfLines={1} style={ [
                         styles[theme].note ,              

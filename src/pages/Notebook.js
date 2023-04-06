@@ -46,8 +46,7 @@ function Notes({ navigation }) {
     return unsubscribe;
   }, []);
 
-
- 
+  
   //////////NAVIGATIONLAR////////////////
   const navigateToWriter = () => { navigation.navigate('Notlar') }
   const navigateToNote = (note, id, isPinned) => {
@@ -239,8 +238,8 @@ const handleCloseLongPressModal = () => {
 
 ///////////////////////////////////////////////////////
   const drawerMenu = useSelector((state) => state.notLocalNotes.isDrawerOpen)
-
-
+  const isListView = useSelector((state) => state.notes.listView) //galeriView'e göre swipelist yada flatlist (sütunlu) halini render ettik 
+                                                                        //flatlistte kaydırma işlemleri yok
   return (
     <>
       <View style={styles[colorMode].container}>
@@ -253,10 +252,10 @@ const handleCloseLongPressModal = () => {
             <View style={[StyleSheet.absoluteFillObject, { flex: 1, zIndex: 1 }]} />
           </TouchableWithoutFeedback> : null}
           
-
-        <SwipeListView 
+        {isListView ?   (
+          <SwipeListView 
           data={list}
-  
+      
           renderItem={({ item }) => 
           <NoteCard 
           message={item} 
@@ -265,7 +264,7 @@ const handleCloseLongPressModal = () => {
           theme={colorMode} 
           handleLongPress={() => handleLongPress(item.note,item.id,item.isPinned)} 
           onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
-
+      
           ListHeaderComponent={<Header onText={handleSearchBar}/>}
           
           keyExtractor={list => list.id}
@@ -286,7 +285,7 @@ const handleCloseLongPressModal = () => {
                   >
                   </IONIcon>
               }
-
+      
               {
                 data.item.isPinned == false ?    //PIN ICON - ACCORDING TO PIN STATUS
                   <MCIIcon
@@ -301,7 +300,7 @@ const handleCloseLongPressModal = () => {
                   >
                   </MCIIcon>
               }
-
+      
               <IONIcon onPress={() => onShare(data.item.note)}
               name={'share-outline'} color='white' size={30} style={styles[colorMode].share}>
                 
@@ -314,11 +313,27 @@ const handleCloseLongPressModal = () => {
           rightOpenValue={-60}
         
           />
+        ) : 
+        (
+          <FlatList 
+          data={list} 
+          renderItem={({ item }) => 
+          <NoteCard 
+          message={item} 
+          bulkDelete={bulkDelete} 
+          isPinned={item.isPinned} 
+          theme={colorMode} 
+          handleLongPress={() => handleLongPress(item.note,item.id,item.isPinned)} 
+          onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
+          numColumns={2}
+          keyExtractor={item => item.id.toString()}
+          ListHeaderComponent={<Header onText={handleSearchBar}/>}
 
-        <ColorPaletteModal
-          visible={isModalVisible}
-          onClose={handleCloseModal}
-        />
+          />
+        )      
+        }
+
+        <ColorPaletteModal visible={isModalVisible} onClose={handleCloseModal} />
 
         {longPressModal && <BlurView  blurAmount={4}  blurType="light" style={{position:'absolute', left:0,right:0,top:0,bottom:0}}  />}
 

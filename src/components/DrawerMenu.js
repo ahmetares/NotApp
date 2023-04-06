@@ -1,15 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import EntIcons from 'react-native-vector-icons/Entypo'
 import MatIcons from 'react-native-vector-icons/MaterialIcons'
-import SLIcons from 'react-native-vector-icons/SimpleLineIcons'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import FoIcon from 'react-native-vector-icons/Fontisto'
 
 import { handleDrawerStatus, closeDrawer, openColorModal } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeNightMode, changeNoteColor,changeSortMethod } from '../store/localStorageSlicer/noteSlice';
+import { changeNightMode, changeNoteColor,changeSortMethod, setListView } from '../store/localStorageSlicer/noteSlice';
 
 function DrawerMenu({ handleBulkSelection }) {  //notları seç'i prop alarak yapmışız ama burdanda yapılabilirdi
 
@@ -68,6 +67,17 @@ function DrawerMenu({ handleBulkSelection }) {  //notları seç'i prop alarak ya
   }
 
   const sortMethod = useSelector((state) => state.notes.sortMethod)
+  
+  //GalleryView-ListView
+  const isListView = useSelector((state) => state.notes.listView)
+  useEffect(()=> {
+    console.log(isListView)
+
+  },[])
+  const changeViewMethod = () => {
+    dispatch(setListView())
+    dispatch(closeDrawer())
+  }
 
 
 
@@ -77,10 +87,38 @@ function DrawerMenu({ handleBulkSelection }) {  //notları seç'i prop alarak ya
 
         {nightMode ? <EntIcons name='light-up' size={25} onPress={handleNightMode} style={styles.mode} /> :
           <IonIcons name='md-moon' size={25} color={'black'} onPress={handleNightMode} style={styles.mode} />}
+          { isListView ? 
+         
+            (
+          <TouchableOpacity style={{ marginTop: 55 }} onPress={changeViewMethod}>
+
+          <View style={styles.drawerTextWrapper}>
+            <Text style={styles.drawerText}>Galeri olarak görüntüle</Text>
+            <FoIcon name='table-1' size={18} color='black' />
+          </View>
+          </TouchableOpacity>
+          
+          )
+
+          :  
+
+          (
+            <TouchableOpacity style={{ marginTop: 55 }} onPress={changeViewMethod}>
+  
+            <View style={styles.drawerTextWrapper}>
+              <Text style={styles.drawerText}>Liste olarak görüntüle</Text>
+              <IonIcons name='list-outline' size={20} color='black' />
+            </View>
+            </TouchableOpacity>
+            
+          )
+          
+       }
+         
+          <View style={styles.seperator}></View>
 
 
-
-        <TouchableOpacity style={{ marginTop: 55 }} onPress={handleBulkSelection}>
+        <TouchableOpacity onPress={handleBulkSelection}>
 
           <View style={styles.drawerTextWrapper}>
             <Text style={styles.drawerText}>Notları seç</Text>

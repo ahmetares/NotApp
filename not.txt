@@ -47,6 +47,8 @@ ikinci bi slice denenebilir yeni store yeni Provider
 ++++BUG toplu silmede hiç bişey seçili değilse de silinebiliyor
 -BUG Search de işlem yapılınca search silinmiyo ama bütün hepsi geliyor
 
+-CODEREVIEW table yada list goruntulenmesini notebooktan yaparken farklı bir component'ten çağırır gibi yapınca notları seç çalışmadı 
+ama direkt return'un içinde çalıştırınca çalıştı ama return un içi çok dolu oldu?
 
 
 

@@ -9,7 +9,8 @@ export const noteSlice = createSlice({
     pinnedNotes: [],
     nightMode: false,
     noteColor: '',
-    sortMethod: 'newFirst'
+    sortMethod: 'newFirst',
+    listView: true
   },
   reducers: {
     
@@ -77,6 +78,9 @@ export const noteSlice = createSlice({
       state.sortMethod = action.payload
       sortNotes(state)
 
+    },
+    setListView: (state,action) => {
+      state.listView = !state.listView
     }
 
   }
@@ -102,6 +106,6 @@ const sortNotes = (state) => {
 
 
 
-export const { addNote, updateNote, deleteNote, deleteBulky, pinNote, unPinNote, updatePinnedNote,changeNightMode,changeNoteColor,changeSortMethod} = noteSlice.actions
+export const { addNote, updateNote, deleteNote, deleteBulky, pinNote, unPinNote, updatePinnedNote,changeNightMode,changeNoteColor,changeSortMethod, setListView} = noteSlice.actions
 
 export default noteSlice.reducer
