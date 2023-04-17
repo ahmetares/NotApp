@@ -140,5 +140,51 @@ ama direkt return'un içinde çalıştırınca çalıştı ama return un içi ç
 
   ------------------------------------------------------------------------------------------------------------------------
     * Flatlist yatay yapma =>  numColumns={3} diyip flatlist'i yatay sütünsal mantıkla kullanabilmek için keyExtractor'a id den sonra toString() verdik ve bug gitti (ColorPaletteComponent.js) (4.video, 13.11)
+      --------------------------------
     * flatlist arasına seperator koyma =  <FlatList .. ItemSeparatorComponent={renderSeperator} />      const renderSeperator = () => <View style={styles.seperator} />
+      --------------------------------
 
+    * navigationlarda gördüğümüz {...props} muhabbeti =>  navigationlarda componente prop vericeksek ...props demeliyiiz
+      <Stack.Screen component={renderNote} name='Note'/> 
+
+      const renderNote = (props) => <Note {...props} user={user} />
+      --------------------------------
+    * navigation header transparant => <Stack.Navigator screenOptions ={{headerTitle:'' , headerTransparent:true}}
+      bu şekilde  header trasnparent oldu ve back butonu özelliği kaybolmadı veya kullanmak istediğimiz başka bir şey 
+      --------------------------------
+    * navigation useHeaderHeight => 
+
+      yukardaki özelliği kullandığımızda paddingTop vermek zorundayız çünkü header ve component üst üste geliyor
+      burda import {useHeaderHeight} from '@react-navigation/stack'
+      const headerHeight = useHeaderHeight()
+      paddingTop: headerHeight
+      --------------------------------
+    * navigationlarda obje değerlerini daha temiz gönderip almak =>
+      gönderirken tek tek note'un değerlerini göndermek yerine note'u gönder ve
+      tek tek şu hareketi yapcağımıza:
+        const note = route.params.note
+        const id = route.params.id
+        const isPinned = route.params.isPinned
+        
+    şu daha mantıklı olabilir:
+      const {note} = route.params
+      sonra compenentler içinde kullan == <Text>{note.title}</Text>
+      
+      --------------------------------
+    * time format işlemleri
+        time: Date.now() olarak time değerini kaydetti
+        ve time'ı yazdırırken şöyle formatladı:
+    
+     <Text style={styles.time}>`Created At ${formatDate(note.time)}`</Text>
+
+      const formatDate = ms => {
+        const date = new Date(ms);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hrs = date.getHours();
+        const min = date.getMinutes();
+        const sec = date.getSeconds();
+
+        return `${day}/${month}/${year} - ${hrs}:${min}:${sec}`;   //12.02.2021 - 10.23.15
+};
