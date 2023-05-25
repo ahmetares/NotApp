@@ -54,10 +54,13 @@ function NoteWriter({navigation}) {
   return (
     <KeyboardAvoidingView
     {...(Platform.OS === 'ios' ? { behavior: 'padding' } : {})}
+    keyboardVerticalOffset={Platform.OS === 'ios' && 100}
+
     style={styles[colorMode].container}>
       <ScrollView>
 
         <TextInput style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
+       
         </ScrollView>
 
         <View style={styles[colorMode].button_container}>
@@ -69,10 +72,13 @@ function NoteWriter({navigation}) {
 
 const base_style = {
   container: {
-    flex:1
+    flex:1,
+    backgroundColor:'white'
   },
   input: {
-    height:Dimensions.get('window').height
+    height:Dimensions.get('window').height,
+    marginLeft:12,
+    fontSize: 17,
   }
 }
 
