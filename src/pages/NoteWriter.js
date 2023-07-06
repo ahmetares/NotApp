@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, Dimensions, KeyboardAvoidingView,ScrollView,Alert,  Modal } from 'react-native';
+import React, { useEffect, useRef,useState } from 'react';
+import { StyleSheet, View,Keyboard, TextInput, Dimensions, KeyboardAvoidingView,ScrollView,Alert,  Modal } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { addNote } from '../store/localStorageSlicer/noteSlice'
 import Button from '../components/Button';
@@ -50,6 +50,26 @@ function NoteWriter({navigation}) {
   }   
 
 
+  const [isScrollEnabled, setIsScrollEnabled] = React.useState(true);
+  
+  function onKeyboardWillShow() {
+    setIsScrollEnabled(false);
+  }
+
+  function onKeyboardDidShow() {
+    setIsScrollEnabled(true);
+  }
+
+  React.useEffect(() => {
+    const subKWS = Keyboard.addListener("keyboardWillShow", onKeyboardWillShow);
+    const subKDS = Keyboard.addListener("keyboardDidShow", onKeyboardDidShow);
+
+    return () => {
+      subKWS.remove();
+      subKDS.remove();
+    };
+  }, []);
+
 
   return (
     <KeyboardAvoidingView
@@ -57,9 +77,9 @@ function NoteWriter({navigation}) {
     keyboardVerticalOffset={Platform.OS === 'ios' && 100}
 
     style={styles[colorMode].container}>
-      <ScrollView>
+      <ScrollView style={{flex:1}} >
 
-        <TextInput style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
+        <TextInput scrollEnabled={false}  placeholderTextColor="grey"  placeholder='Not..' style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
        
         </ScrollView>
 
@@ -77,7 +97,7 @@ const base_style = {
   },
   input: {
     height:Dimensions.get('window').height,
-    marginLeft:12,
+    paddingLeft:12,
     fontSize: 17,
   }
 }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Not Defteri</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">v-b9q47qVABwxUyDzsyyHf0m479IG-Zz618xA</string>
+
 </resources>

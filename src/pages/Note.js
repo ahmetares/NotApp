@@ -72,7 +72,7 @@ function Note ({route,navigation}) {
         style={styles[colorMode].container}>
           <ScrollView>
     
-            <TextInput style={styles[colorMode].input} onChangeText={setText} value={text} textAlignVertical='top' multiline/>
+            <TextInput  style={styles[colorMode].input} onChangeText={setText} value={text} textAlignVertical='top' multiline/>
             </ScrollView>
 
             <View style={styles[colorMode].button_container}>
@@ -90,7 +90,6 @@ export default Note
 const base_style = {
   container: {
     flex:1,
-    backgroundColor:'white'
 
   },
   input: {

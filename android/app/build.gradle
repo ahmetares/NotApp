@@ -2,6 +2,9 @@ apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 apply plugin: 'com.google.gms.google-services' // <- Add this line
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
+
+
 import com.android.build.OutputFile
 
 /**
@@ -99,8 +102,8 @@ android {
         applicationId "com.notappfromata"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "1.5"
+        versionCode 8
+        versionName "1.7"
     }
 
     splits {

@@ -5,6 +5,7 @@ import store from './src/store/store';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist';
+import CodePush from 'react-native-code-push';
 
 import Router from './src/Router';
 
@@ -49,6 +50,12 @@ const App = () => {
   );
 };
 
-export default App;
+const codePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME
+}
+
+
+
+export default CodePush(codePushOptions)(App);
 
 
