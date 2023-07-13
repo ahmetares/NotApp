@@ -50,36 +50,16 @@ function NoteWriter({navigation}) {
   }   
 
 
-  const [isScrollEnabled, setIsScrollEnabled] = React.useState(true);
-  
-  function onKeyboardWillShow() {
-    setIsScrollEnabled(false);
-  }
-
-  function onKeyboardDidShow() {
-    setIsScrollEnabled(true);
-  }
-
-  React.useEffect(() => {
-    const subKWS = Keyboard.addListener("keyboardWillShow", onKeyboardWillShow);
-    const subKDS = Keyboard.addListener("keyboardDidShow", onKeyboardDidShow);
-
-    return () => {
-      subKWS.remove();
-      subKDS.remove();
-    };
-  }, []);
-
 
   return (
     <KeyboardAvoidingView
     {...(Platform.OS === 'ios' ? { behavior: 'padding' } : {})}
-    keyboardVerticalOffset={Platform.OS === 'ios' && 100}
+    keyboardVerticalOffset={Platform.OS === 'ios' && 90}
 
     style={styles[colorMode].container}>
       <ScrollView style={{flex:1}} >
 
-        <TextInput scrollEnabled={false}  placeholderTextColor="grey"  placeholder='Not..' style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
+        <TextInput placeholderTextColor="grey"  placeholder='Not..' style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
        
         </ScrollView>
 

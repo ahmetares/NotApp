@@ -67,7 +67,7 @@ function Note ({route,navigation}) {
     return(
         <KeyboardAvoidingView
         {...(Platform.OS === 'ios' ? { behavior: 'padding'} : null)} 
-        keyboardVerticalOffset={Platform.OS === 'ios' && 100}
+        keyboardVerticalOffset={Platform.OS === 'ios' && 90}
 
         style={styles[colorMode].container}>
           <ScrollView>
@@ -94,7 +94,7 @@ const base_style = {
   },
   input: {
     height:Dimensions.get('window').height,
-    marginLeft:12,
+    paddingLeft:12,
     fontSize: 17,
   }
 }
