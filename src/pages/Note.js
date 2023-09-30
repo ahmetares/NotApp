@@ -1,4 +1,4 @@
-import { StyleSheet, Alert, View,Text,KeyboardAvoidingView,ScrollView,Dimensions,TextInput } from "react-native"
+import { StyleSheet, Keyboard ,Alert, View,Text,KeyboardAvoidingView,ScrollView,Dimensions,TextInput } from "react-native"
 import Button from '../components/Button';
 import {useEffect, useState} from 'react'
 import { useSelector,useDispatch } from "react-redux";
@@ -14,6 +14,8 @@ function Note ({route,navigation}) {
     
     const [text,setText] = useState('')
     const [colorMode , setColorMode] = useState('light')
+    const [keyboardOn , setKeyboard] = useState(false)
+
 
 
     const note = route.params.note
@@ -38,6 +40,27 @@ function Note ({route,navigation}) {
     
       }    
      },[lightOrNightMode])
+
+
+
+     useEffect(() => {
+      const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboard(true);
+        console.log('keyborad açıldı')
+      });
+      const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboard(false);
+        console.log('keyborad kapalı')
+
+      });
+  
+      return () => {
+        showSubscription.remove();
+        hideSubscription.remove();
+      };
+    }, []);
+
+
 
 
     const saveNote =  (id,text) => {    
@@ -65,14 +88,19 @@ function Note ({route,navigation}) {
     }
       
     return(
-        <KeyboardAvoidingView
+        <KeyboardAvoidingView 
         {...(Platform.OS === 'ios' ? { behavior: 'padding'} : null)} 
-        keyboardVerticalOffset={Platform.OS === 'ios' && 90}
+        keyboardVerticalOffset={Platform.OS === 'ios' &&83}
 
         style={styles[colorMode].container}>
           <ScrollView>
     
-            <TextInput  style={styles[colorMode].input} onChangeText={setText} value={text} textAlignVertical='top' multiline/>
+            <TextInput  
+            style={[styles[colorMode].input, {maxHeight: keyboardOn ? Dimensions.get('window').height-300 : Dimensions.get('window').height-100 }]} 
+            onChangeText={setText} 
+            value={text} 
+            textAlignVertical='top' 
+            multiline/>
             </ScrollView>
 
             <View style={styles[colorMode].button_container}>
@@ -93,7 +121,6 @@ const base_style = {
 
   },
   input: {
-    height:Dimensions.get('window').height,
     paddingLeft:12,
     fontSize: 17,
   }
@@ -104,27 +131,39 @@ const styles = {
 
   light: StyleSheet.create({
     ...base_style,
+
+    container:{
+      ...base_style.container,
+      backgroundColor:'white',
+    },
+
     input:{
       ...base_style.input,
-      backgroundColor:'white',
-  
+      color:'black'
     },
+
   
     button_container:{
-      backgroundColor:'white'
+      backgroundColor:'white',
+
     }
   }),
 
   dark: {
     ...base_style,
+
+    container:{
+      ...base_style.container,
+      backgroundColor:'#423d3d',
+    },
+
     input:{
       ...base_style.input,
-      backgroundColor:'#423d3d',
       color:'white'
   
     },
     button_container:{
-      backgroundColor:'black'
+      backgroundColor:'black',
     }
   }
 }

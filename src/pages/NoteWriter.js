@@ -49,17 +49,18 @@ function NoteWriter({navigation}) {
     navigation.navigate('Not Defteri')
   }   
 
+  const inputRef = React.useRef()
 
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAvoidingView 
     {...(Platform.OS === 'ios' ? { behavior: 'padding' } : {})}
     keyboardVerticalOffset={Platform.OS === 'ios' && 90}
 
     style={styles[colorMode].container}>
-      <ScrollView style={{flex:1}} >
+      <ScrollView onTouchStart={() => inputRef.current.focus()} >
 
-        <TextInput placeholderTextColor="grey"  placeholder='Not..' style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
+        <TextInput ref={inputRef} placeholderTextColor="grey"  placeholder='Not..' style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
        
         </ScrollView>
 
@@ -73,12 +74,13 @@ function NoteWriter({navigation}) {
 const base_style = {
   container: {
     flex:1,
-    backgroundColor:'white'
   },
   input: {
-    height:Dimensions.get('window').height,
+    flex:1,
+    maxHeight:Dimensions.get('window').height,
     paddingLeft:12,
     fontSize: 17,
+    marginVertical:10
   }
 }
 
@@ -87,10 +89,14 @@ const styles = {
 
   light: StyleSheet.create({
     ...base_style,
+    container:{
+      ...base_style.container,
+      backgroundColor:'white',
+    },
+
     input:{
       ...base_style.input,
-      backgroundColor:'white',
-  
+      color:'black'
     },
   
     button_container:{
@@ -100,9 +106,13 @@ const styles = {
 
   dark: {
     ...base_style,
+    container:{
+      ...base_style.container,
+      backgroundColor:'#423d3d',
+    },
+
     input:{
       ...base_style.input,
-      backgroundColor:'#423d3d',
       color:'white'
   
     },
