@@ -1,8 +1,7 @@
 import React, { useEffect, useRef,useState } from 'react';
-import { StyleSheet, View,Keyboard, TextInput, Dimensions, KeyboardAvoidingView,ScrollView,Alert,  Modal } from 'react-native';
+import { StyleSheet,Button, View,Keyboard, TextInput, Dimensions, KeyboardAvoidingView,ScrollView,Alert,  Modal } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { addNote } from '../store/localStorageSlicer/noteSlice'
-import Button from '../components/Button';
 
 import { showMessage, hideMessage } from "react-native-flash-message";
 
@@ -16,8 +15,9 @@ function NoteWriter({navigation}) {
   const notes = useSelector((state) => state.notes.notes)
   const dispatch = useDispatch()
 
-  const lightOrNightMode =  useSelector((state)=> state.notes.nightMode)
 
+
+  const lightOrNightMode =  useSelector((state)=> state.notes.nightMode)
     useEffect(()=> {
       if (!lightOrNightMode) {
          setColorMode('light')
@@ -32,6 +32,7 @@ function NoteWriter({navigation}) {
 
   function handleNote() {
     if(!text.trim()){
+      console.log('mesaj yokki')
       showMessage({
         message: "Lütfen not giriniz",
         type: "danger",
@@ -49,25 +50,38 @@ function NoteWriter({navigation}) {
     navigation.navigate('Not Defteri')
   }   
 
-  const inputRef = React.useRef()
 
+  useEffect(()=> {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button color={'#d7ac2a'} title='Ekle' onPress={handleNote}></Button>
+      )
+    })
+  },[navigation,text])
+
+
+  const inputRef = React.useRef()
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 50 : 0
 
   return (
     <KeyboardAvoidingView 
-    {...(Platform.OS === 'ios' ? { behavior: 'padding' } : {})}
-    keyboardVerticalOffset={Platform.OS === 'ios' && 90}
+    behavior= {Platform.OS === 'ios' ?  'padding' : null } 
+    enabled={true} 
+    keyboardVerticalOffset={keyboardVerticalOffset}
+    style={styles[colorMode].container}
+    onTouchStart={() => inputRef.current.focus()} >
 
-    style={styles[colorMode].container}>
-      <ScrollView onTouchStart={() => inputRef.current.focus()} >
-
-        <TextInput ref={inputRef} placeholderTextColor="grey"  placeholder='Not..' style={styles[colorMode].input} onChangeText={setText}  multiline textAlignVertical='top'/>
-       
-        </ScrollView>
-
-        <View style={styles[colorMode].button_container}>
-        <Button title='Ekle' onPress={handleNote}/>
-        </View> 
+        <TextInput 
+        ref={inputRef} 
+        placeholderTextColor="grey"  
+        placeholder='Not..' 
+        style={styles[colorMode].input} 
+        onChangeText={setText}  multiline textAlignVertical='top'/>
+      
         </KeyboardAvoidingView>
+
+
+
   );
 }
 
@@ -77,10 +91,10 @@ const base_style = {
   },
   input: {
     flex:1,
-    maxHeight:Dimensions.get('window').height,
     paddingLeft:12,
     fontSize: 17,
-    marginVertical:10
+    marginVertical:10,
+    marginBottom:'10%'
   }
 }
 

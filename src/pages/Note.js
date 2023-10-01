@@ -1,6 +1,5 @@
-import { StyleSheet, Keyboard ,Alert, View,Text,KeyboardAvoidingView,ScrollView,Dimensions,TextInput } from "react-native"
-import Button from '../components/Button';
-import {useEffect, useState} from 'react'
+import { StyleSheet, Keyboard,Button ,Alert, View,Text,KeyboardAvoidingView,ScrollView,Dimensions,TextInput, Platform } from "react-native"
+import {useEffect, useState,useRef} from 'react'
 import { useSelector,useDispatch } from "react-redux";
 import {  updateNote, updatePinnedNote } from "../store/localStorageSlicer/noteSlice";
 
@@ -14,7 +13,6 @@ function Note ({route,navigation}) {
     
     const [text,setText] = useState('')
     const [colorMode , setColorMode] = useState('light')
-    const [keyboardOn , setKeyboard] = useState(false)
 
 
 
@@ -43,26 +41,6 @@ function Note ({route,navigation}) {
 
 
 
-     useEffect(() => {
-      const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-        setKeyboard(true);
-        console.log('keyborad açıldı')
-      });
-      const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-        setKeyboard(false);
-        console.log('keyborad kapalı')
-
-      });
-  
-      return () => {
-        showSubscription.remove();
-        hideSubscription.remove();
-      };
-    }, []);
-
-
-
-
     const saveNote =  (id,text) => {    
       try {
         if(!text.trim()){
@@ -79,34 +57,45 @@ function Note ({route,navigation}) {
         dispatch(updatePinnedNote({id,text}))
         }
         showMessage({
-          message: "Not başarıyla kaydedildi",
+          message: "Not başarıyla güncellendi",
           type: "info",
         });
       } catch (error) {
         console.log(error)
       }
     }
+
+
+    useEffect(()=> {
+      navigation.setOptions({
+        headerRight: () => (
+          <Button color={'#d7ac2a'} title='Güncelle' onPress={() => saveNote(id,text)}></Button>
+        )
+      })
+    },[navigation,text])
+
+    const inputRef = useRef()
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 50 : 0
+
       
     return(
-        <KeyboardAvoidingView 
-        {...(Platform.OS === 'ios' ? { behavior: 'padding'} : null)} 
-        keyboardVerticalOffset={Platform.OS === 'ios' &&83}
+      <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ?  'padding' : null } 
+      enabled={true} 
+      keyboardVerticalOffset={keyboardVerticalOffset}
+      style={styles[colorMode].container}
+      onTouchStart={() => inputRef.current.focus()} >
 
-        style={styles[colorMode].container}>
-          <ScrollView>
+
     
             <TextInput  
-            style={[styles[colorMode].input, {maxHeight: keyboardOn ? Dimensions.get('window').height-300 : Dimensions.get('window').height-100 }]} 
+            ref={inputRef} 
+            style={styles[colorMode].input} 
             onChangeText={setText} 
             value={text} 
             textAlignVertical='top' 
             multiline/>
-            </ScrollView>
 
-            <View style={styles[colorMode].button_container}>
-    
-            <Button title='Kaydet' onPress={() => saveNote(id,text)}/>
-            </View>
             </KeyboardAvoidingView>
     )
 
