@@ -57,7 +57,7 @@ function Note ({route,navigation}) {
         dispatch(updatePinnedNote({id,text}))
         }
         showMessage({
-          message: "Not başarıyla güncellendi",
+          message: "Not başarıyla güncellendi.",
           type: "info",
         });
       } catch (error) {
