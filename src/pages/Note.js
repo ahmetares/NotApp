@@ -75,29 +75,32 @@ function Note ({route,navigation}) {
     },[navigation,text])
 
     const inputRef = useRef()
-    const keyboardVerticalOffset = Platform.OS === 'ios' ? 50 : 0
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 75 : 0
 
       
-    return(
-      <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ?  'padding' : null } 
-      enabled={true} 
-      keyboardVerticalOffset={keyboardVerticalOffset}
-      style={styles[colorMode].container}
-      onTouchStart={() => inputRef.current.focus()} >
-
-
-    
-            <TextInput  
-            ref={inputRef} 
-            style={styles[colorMode].input} 
-            onChangeText={setText} 
-            value={text} 
-            textAlignVertical='top' 
-            multiline/>
-
-            </KeyboardAvoidingView>
-    )
+    return (
+      <View style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={{flex: 1}}
+          keyboardDismissMode="none"
+              keyboardShouldPersistTaps='never'
+          onTouchStart={() => inputRef.current.focus()}
+          style={styles[colorMode].container}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : null} //iosda klavye arkası yazı kalıyodu uzun yazılarda
+            keyboardVerticalOffset={keyboardVerticalOffset}>
+            <TextInput
+              ref={inputRef}
+              style={styles[colorMode].input}
+              onChangeText={setText}
+              value={text}
+              textAlignVertical="top"
+              multiline
+            />
+          </KeyboardAvoidingView>
+        </ScrollView>
+      </View>
+    );
 
 }
 
@@ -106,7 +109,7 @@ export default Note
 
 const base_style = {
   container: {
-    flex:1,
+   // flex:1,
 
   },
   input: {
