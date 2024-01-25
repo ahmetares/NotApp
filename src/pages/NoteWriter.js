@@ -2,12 +2,16 @@ import React, { useEffect, useRef,useState } from 'react';
 import { StyleSheet,Button, View,Keyboard, TextInput, Dimensions, KeyboardAvoidingView,ScrollView,Alert,  Modal } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux'
 import { addNote } from '../store/localStorageSlicer/noteSlice'
+import {useTranslation} from 'react-i18next';
 
 import { showMessage, hideMessage } from "react-native-flash-message";
 
 const deviceSize = Dimensions.get('window')
 
 function NoteWriter({navigation}) {
+
+   const {t} = useTranslation();
+
 
   const [text,setText] = useState('')
   const [colorMode , setColorMode] = useState('light')
@@ -34,8 +38,8 @@ function NoteWriter({navigation}) {
     if(!text.trim()){
       console.log('mesaj yokki')
       showMessage({
-        message: "Lütfen not giriniz",
-        type: "danger",
+        message: t('warn-empty-note'),
+        type: 'danger',
       });
       return
     }
@@ -54,9 +58,12 @@ function NoteWriter({navigation}) {
   useEffect(()=> {
     navigation.setOptions({
       headerRight: () => (
-        <Button color={'#d7ac2a'} title='Ekle' onPress={handleNote}></Button>
-      )
-    })
+        <Button
+          color={'#d7ac2a'}
+          title={t('write-note-right-header')}
+          onPress={handleNote}></Button>
+      ),
+    });
   },[navigation,text])
 
 
@@ -74,7 +81,7 @@ function NoteWriter({navigation}) {
         <TextInput 
         ref={inputRef} 
         placeholderTextColor="grey"  
-        placeholder='Not..' 
+        placeholder={t("write-note-input-placeholder")}
         style={styles[colorMode].input} 
         onChangeText={setText}  multiline textAlignVertical='top'/>
       

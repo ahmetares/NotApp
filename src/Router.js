@@ -12,8 +12,11 @@ import { useDispatch,useSelector} from 'react-redux';
 import FlashMessage from 'react-native-flash-message';
 import MCIIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import IONIcon from 'react-native-vector-icons/Ionicons'
+import {useTranslation} from 'react-i18next';
 
 function Router() {
+     const {t} = useTranslation();
+
   const dispatch = useDispatch();
 
 
@@ -75,7 +78,7 @@ function Router() {
           component={NoteWriter}
           options={{
             headerTitleAlign: 'left',
-            title: 'Notlar',
+            title:t('write-note-center-header'),
             headerStyle: {backgroundColor: mode(),  },
             headerTintColor:'#d7ac2a',
             headerTitleStyle: {color: '#d7ac2a'},
@@ -84,6 +87,7 @@ function Router() {
 
         <Stack.Screen name="Not" component={Note}
         options= {{
+          title:t('view-note-center-header'),
           headerStyle: {backgroundColor:mode()},
           headerTintColor:'#d7ac2a',
           headerTitleStyle: {color:'#d7ac2a', }

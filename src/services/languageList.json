@@ -1,0 +1,13 @@
+{
+    "en": {
+        "name": "English",
+        "nativeName": "English",
+        "short":"en"
+    },
+    "tr": {
+        "name": "Turkish",
+        "nativeName": "Türkçe",
+        "short":"tr"
+    }
+   
+}

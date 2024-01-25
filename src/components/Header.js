@@ -2,10 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, Share,Text, View, TextInput,TouchableOpacity, FlatList, TouchableWithoutFeedback, Dimensions, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/AntDesign' // ekstra npm i --save-dev @types/react-native-vector-icons  yapınca calıstı ayrıca bu paket için android ve iosda konfig. yapılmalı
+import {useTranslation} from 'react-i18next';
 
 
 export default function Header({onText}) {  //Notebook'un en üstünde listelencek (title+searchbar) flatlistin ListHeaderComponent özelliği ile 
  
+    const {t} = useTranslation();
+
     const [colorMode, setColorMode] = useState('light')
     const lightOrNightMode = useSelector((state) => state.notes.nightMode)
     
@@ -18,18 +21,21 @@ export default function Header({onText}) {  //Notebook'un en üstünde listelenc
       }
     }, [lightOrNightMode])
   
-    return(
-     <View>
-  
-        <Text style={styles[colorMode].title}>Notlar</Text> 
-  
+    return (
+      <View>
+        <Text style={styles[colorMode].title}>{t('header')}</Text>
+
         <View style={styles[colorMode].searchContainer}>
-        <Icon name={'search1'} color={'grey'} size={20} />
-  
-        <TextInput  style={styles[colorMode].search} placeholder={'Arayın'} onChangeText={onText} />
+          <Icon name={'search1'} color={'grey'} size={20} />
+
+          <TextInput
+            style={styles[colorMode].search}
+            placeholder={t('search-placeholder')}
+            onChangeText={onText}
+          />
         </View>
       </View>
-    )
+    );
   }
 
 

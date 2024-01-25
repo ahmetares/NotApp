@@ -9,8 +9,11 @@ import FoIcon from 'react-native-vector-icons/Fontisto'
 import { handleDrawerStatus, closeDrawer, openColorModal } from '../store/notLocalStorageSlicer/nonLocalNoteSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeNightMode, changeNoteColor,changeSortMethod, setListView } from '../store/localStorageSlicer/noteSlice';
+import {useTranslation} from 'react-i18next';
 
 function DrawerMenu({ handleBulkSelection }) {  //notları seç'i prop alarak yapmışız ama burdanda yapılabilirdi
+
+      const {t} = useTranslation();
 
   const dispatch = useDispatch()
   const [nightMode, setNightMode] = useState(false)
@@ -84,45 +87,44 @@ function DrawerMenu({ handleBulkSelection }) {  //notları seç'i prop alarak ya
   return (
     <View style={styles.container}>
       <View style={styles.drawerContainer}>
-
-        {nightMode ? <EntIcons name='light-up' size={25} onPress={handleNightMode} style={styles.mode} /> :
-          <IonIcons name='md-moon' size={25} color={'black'} onPress={handleNightMode} style={styles.mode} />}
-          { isListView ? 
-         
-            (
-          <TouchableOpacity style={{ marginTop: 55 }} onPress={changeViewMethod}>
-
-          <View style={styles.drawerTextWrapper}>
-            <Text style={styles.drawerText}>Galeri olarak görüntüle</Text>
-            <FoIcon name='table-1' size={18} color='black' />
-          </View>
-          </TouchableOpacity>
-          
-          )
-
-          :  
-
-          (
-            <TouchableOpacity style={{ marginTop: 55 }} onPress={changeViewMethod}>
-  
+        {nightMode ? (
+          <EntIcons
+            name="light-up"
+            size={25}
+            onPress={handleNightMode}
+            style={styles.mode}
+          />
+        ) : (
+          <IonIcons
+            name="md-moon"
+            size={25}
+            color={'black'}
+            onPress={handleNightMode}
+            style={styles.mode}
+          />
+        )}
+        {isListView ? (
+          <TouchableOpacity style={{marginTop: 55}} onPress={changeViewMethod}>
             <View style={styles.drawerTextWrapper}>
-              <Text style={styles.drawerText}>Liste olarak görüntüle</Text>
-              <IonIcons name='list-outline' size={20} color='black' />
+              <Text style={styles.drawerText}>{t('table-view-prompt')}</Text>
+              <FoIcon name="table-1" size={18} color="black" />
             </View>
-            </TouchableOpacity>
-            
-          )
-          
-       }
-         
-          <View style={styles.seperator}></View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={{marginTop: 55}} onPress={changeViewMethod}>
+            <View style={styles.drawerTextWrapper}>
+              <Text style={styles.drawerText}>{t('list-view-prompt')}</Text>
+              <IonIcons name="list-outline" size={20} color="black" />
+            </View>
+          </TouchableOpacity>
+        )}
 
+        <View style={styles.seperator}></View>
 
         <TouchableOpacity onPress={handleBulkSelection}>
-
           <View style={styles.drawerTextWrapper}>
-            <Text style={styles.drawerText}>Notları seç</Text>
-            <IonIcons name='checkmark-circle-outline' size={20} color='black' />
+            <Text style={styles.drawerText}>{t('bulk-selection-prompt')}</Text>
+            <IonIcons name="checkmark-circle-outline" size={20} color="black" />
           </View>
         </TouchableOpacity>
 
@@ -130,8 +132,8 @@ function DrawerMenu({ handleBulkSelection }) {  //notları seç'i prop alarak ya
 
         <TouchableOpacity onPress={handleColorPaletteModal}>
           <View style={styles.drawerTextWrapper}>
-            <Text style={styles.drawerText}>Renk seç</Text>
-            <IonIcons name='color-palette-outline' size={20} color='black' />
+            <Text style={styles.drawerText}>{t('color-selection-prompt')}</Text>
+            <IonIcons name="color-palette-outline" size={20} color="black" />
           </View>
         </TouchableOpacity>
 
@@ -139,33 +141,51 @@ function DrawerMenu({ handleBulkSelection }) {  //notları seç'i prop alarak ya
 
         <TouchableOpacity onPress={toggleAccordion}>
           <View style={styles.drawerTextWrapper}>
-            <Text style={styles.drawerText}>Şuna göre sırala</Text>
-            <Animated.View style={{transform: [{rotateZ:arrowTransform}]}}>
-            <MatIcons name='arrow-right' size={22} color='black' />
+            <Text style={styles.drawerText}>{t('sort-by-prompt')}</Text>
+            <Animated.View style={{transform: [{rotateZ: arrowTransform}]}}>
+              <MatIcons name="arrow-right" size={22} color="black" />
             </Animated.View>
           </View>
-                 </TouchableOpacity>
+        </TouchableOpacity>
 
-          {showAccordion && (
-            <View>
-               <TouchableOpacity onPress={handleSortNew} style={styles.accordionOptionWrapper}>
-              <Text style={styles.accordionOption}>Önce en yeni</Text>
-             {sortMethod=='newFirst' && <IonIcons name='md-checkmark-circle-sharp'  size={19} color={'grey'}/>} 
-              </TouchableOpacity>
+        {showAccordion && (
+          <View>
+            <TouchableOpacity
+              onPress={handleSortNew}
+              style={styles.accordionOptionWrapper}>
+              <Text style={styles.accordionOption}>
+                {t('newest-first-prompt')}
+              </Text>
+              {sortMethod == 'newFirst' && (
+                <IonIcons
+                  name="md-checkmark-circle-sharp"
+                  size={19}
+                  color={'grey'}
+                />
+              )}
+            </TouchableOpacity>
 
-              <View style={styles.accordionSeperator}></View>
-             
-              <TouchableOpacity onPress={handleSortOld} style={styles.accordionOptionWrapper}>
-              <Text style={styles.accordionOption}>Önce en eski</Text>
-              {sortMethod=='oldFirst' && <IonIcons name='md-checkmark-circle-sharp'  size={19} color={'grey'}/>}
-              </TouchableOpacity>
-            </View>)}
+            <View style={styles.accordionSeperator}></View>
 
-
-
+            <TouchableOpacity
+              onPress={handleSortOld}
+              style={styles.accordionOptionWrapper}>
+              <Text style={styles.accordionOption}>
+                {t('oldest-first-prompt')}
+              </Text>
+              {sortMethod == 'oldFirst' && (
+                <IonIcons
+                  name="md-checkmark-circle-sharp"
+                  size={19}
+                  color={'grey'}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

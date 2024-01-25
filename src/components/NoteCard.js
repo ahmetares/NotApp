@@ -1,8 +1,9 @@
-import { StyleSheet,Dimensions, View,TouchableHighlight, TouchableOpacity, Text, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet,Dimensions,NativeModules, Platform, View,TouchableHighlight, TouchableOpacity, Text, TouchableWithoutFeedback } from "react-native"
 import { useEffect, useState } from "react";
 
 import { format, formatDistance, formatRelative, parseISO, subDays } from 'date-fns'
-import { tr } from "date-fns/locale";
+import { tr,enUS } from "date-fns/locale";
+
 import FeaIcon from 'react-native-vector-icons/Feather'
 import FontAIcon from 'react-native-vector-icons/FontAwesome'
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -12,14 +13,25 @@ import { useDispatch ,useSelector} from "react-redux";
 import { pushBulkDelete,popBulkDelete, handleLongPressStatus } from "../store/notLocalStorageSlicer/nonLocalNoteSlice";
 import { changeNoteColor } from "../store/localStorageSlicer/noteSlice";
 
+
+const deviceLanguage =
+  Platform.OS === 'ios'
+    ? NativeModules.SettingsManager.settings.AppleLocale ||
+      NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
+    : NativeModules.I18nManager.localeIdentifier;
+
+
 function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' ,handleLongPress}) {
 
-  
+    const dateLocaleLang = deviceLanguage.substring(0,2) == 'en' ? enUS : tr
 
     const dispatch = useDispatch()
 
     const firstLine = message.note.split('\n')[0];
-    const formattedDate = formatDistance(parseISO(message.date), new Date(), { addSuffix: true, locale: tr })
+    const formattedDate = formatDistance(parseISO(message.date), new Date(), {
+      addSuffix: true,
+      locale: dateLocaleLang,
+    });
 
     const [isSelected, setSelected] = useState(false)
 

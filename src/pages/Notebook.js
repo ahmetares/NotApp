@@ -20,11 +20,15 @@ import ColorPaletteModal from '../components/ColorPaletteModal';
 import store from '../store/store';
 import LongPressComponent from '../components/LongPressComponent';
 import LongPressModal from '../components/LongPressModal';
+import {useTranslation} from 'react-i18next';
 
 
 
 function Notes({ navigation }) {
   const dispatch = useDispatch()
+
+  const {t} = useTranslation();
+
 
   const [isPinned, setPinned] = useState(false)
   const [bulkDelete, setIsBulkDelete] = useState(false)
@@ -60,26 +64,25 @@ function Notes({ navigation }) {
 
   //////////NOTU SİLME////////////////
   const handleDelete = (id) => {
-    Alert.alert('Notu sil', 'Notu silmek istediğinizden emin misiniz?', [
+    Alert.alert(t('long-press-delete-note'), t('warn-note-delete'), [
       {
-        text: 'Vazgeç',
+        text: t('warn-answer-no'),
         style: 'cancel',
       },
       {
-        text: 'Sil',
+        text: t('warn-answer-yes'),
         onPress: () => {
-          dispatch(deleteNote(id))
-          setLongPressModal(false)
-
-        }
+          dispatch(deleteNote(id));
+          setLongPressModal(false);
+        },
       },
-    ])
+    ]);
   }
   //////////SABİT NOTU SİLEMEME////////////////
   const handleUnDelete = () => {
     showMessage({
-      message: "Sabitlenmiş notlar silinemez",
-      type: "danger",
+      message: t('warn-pinnednote-delete'),
+      type: 'danger',
     });
   }
 
@@ -118,28 +121,28 @@ function Notes({ navigation }) {
   const confirmBulkDelete = () => {
     if (!(selectedBulkNotes.length > 0)) {
       showMessage({
-        message: "Lütfen silmek istediğiniz notları seçin",
-        type: "danger",
+        message: t('warn-bulkselekction-error'),
+        type: 'danger',
       });
       return
     }
-    Alert.alert('Toplu silme', 'Notları toplu şekilde silmek istediğinizden emin misiniz?', [
+    Alert.alert(t("bulk-selection-prompt"), t("warn-bulk-selection"), [
       {
-        text: 'Vazgeç',
+        text: t('warn-answer-no'),
         style: 'cancel',
       },
       {
-        text: 'Sil',
+        text: t('warn-answer-yes'),
         onPress: () => {
-          dispatch(deleteBulky(selectedBulkNotes))
+          dispatch(deleteBulky(selectedBulkNotes));
           showMessage({
-            message: "Notlar silindi",
-            type: "danger",
+            message: t("warn-bulk-selection-feedback"),
+            type: 'danger',
           });
-          handleBulkDelete()  //toplu silme işlemi bitince herşeyin kapanması için
-        }
+          handleBulkDelete(); //toplu silme işlemi bitince herşeyin kapanması için
+        },
       },
-    ])
+    ]);
   }
 
   //////////GECE GÜNDÜZ MODU///////////////////////////

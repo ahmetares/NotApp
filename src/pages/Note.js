@@ -4,6 +4,8 @@ import { useSelector,useDispatch } from "react-redux";
 import {  updateNote, updatePinnedNote } from "../store/localStorageSlicer/noteSlice";
 
 import { showMessage, hideMessage } from "react-native-flash-message";
+import {useTranslation} from 'react-i18next';
+
 
 const deviceSize = Dimensions.get('window')
 
@@ -13,6 +15,9 @@ function Note ({route,navigation}) {
     
     const [text,setText] = useState('')
     const [colorMode , setColorMode] = useState('light')
+
+    const {t} = useTranslation();
+
 
 
 
@@ -45,8 +50,8 @@ function Note ({route,navigation}) {
       try {
         if(!text.trim()){
           showMessage({
-            message: "Lütfen geçerli bir not girin",
-            type: "danger",
+            message: t('warn-empty-note'),
+            type: 'danger',
           });
           return
         }
@@ -57,8 +62,8 @@ function Note ({route,navigation}) {
         dispatch(updatePinnedNote({id,text}))
         }
         showMessage({
-          message: "Not başarıyla güncellendi",
-          type: "info",
+          message: t('warn-note-updated-successfully'),
+          type: 'info',
         });
       } catch (error) {
         console.log(error)
@@ -69,7 +74,7 @@ function Note ({route,navigation}) {
     useEffect(()=> {
       navigation.setOptions({
         headerRight: () => (
-          <Button color={'#d7ac2a'} title='Güncelle' onPress={() => saveNote(id,text)}></Button>
+          <Button color={'#d7ac2a'} title={t("view-note-right-header")} onPress={() => saveNote(id,text)}></Button>
         )
       })
     },[navigation,text])

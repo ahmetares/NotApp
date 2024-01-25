@@ -11,9 +11,11 @@ import LongPressComponent from './LongPressComponent';
 import Icon from 'react-native-vector-icons/AntDesign';
 import MCIIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IONIcon from 'react-native-vector-icons/Ionicons';
+import {useTranslation} from 'react-i18next';
 
 export default function LongPressModal({visible, onClose, note,isPinned,navigateToNote,pinFromModal,deleteFromModal,shareFromModal}) {
 
+      const {t} = useTranslation();
 
   return (
     <Modal
@@ -22,9 +24,10 @@ export default function LongPressModal({visible, onClose, note,isPinned,navigate
       onBackButtonPress={onClose}
       onBackdropPress={onClose}
       style={{alignItems: 'center'}}>
-        
       <View>
-        <TouchableOpacity onPress={navigateToNote} style={styles.inputContainer}>
+        <TouchableOpacity
+          onPress={navigateToNote}
+          style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             editable={false}
@@ -35,34 +38,34 @@ export default function LongPressModal({visible, onClose, note,isPinned,navigate
 
       <View style={styles.optionContainer}>
         <TouchableOpacity onPress={pinFromModal}>
-         <View style={styles.optionWrapper}>
-           {  
-           !isPinned ? (<>
-            <Text style={styles.option}>Notu Sabitle</Text>
-            <MCIIcon
-              name={'pin-outline'}
-              color="black"
-              size={20}
-              style={styles.pin}></MCIIcon>
-                </>)
-              : 
-              (<>
-                <Text style={styles.option}>Sabitlemeden Kaldır </Text>
+          <View style={styles.optionWrapper}>
+            {!isPinned ? (
+              <>
+                <Text style={styles.option}>{t('long-press-pin-note')}</Text>
+                <MCIIcon
+                  name={'pin-outline'}
+                  color="black"
+                  size={20}
+                  style={styles.pin}></MCIIcon>
+              </>
+            ) : (
+              <>
+                <Text style={styles.option}>{t('long-press-unpin-note')} </Text>
                 <MCIIcon
                   name={'pin-off-outline'}
                   color="black"
                   size={20}
                   style={styles.pin}></MCIIcon>
-                    </>)
-              }
-          </View> 
+              </>
+            )}
+          </View>
         </TouchableOpacity>
 
         <View style={styles.seperator}></View>
 
         <TouchableOpacity onPress={shareFromModal}>
           <View style={styles.optionWrapper}>
-            <Text style={styles.option}>Notu Paylaş</Text>
+            <Text style={styles.option}>{t('long-press-share-note')}</Text>
             <IONIcon
               name={'share-outline'}
               color="black"
@@ -75,16 +78,18 @@ export default function LongPressModal({visible, onClose, note,isPinned,navigate
 
         <TouchableOpacity onPress={deleteFromModal}>
           <View style={styles.optionWrapper}>
-            {!isPinned ?
-             (<>
-            <Text style={[styles.option, {color: 'red'}]}>Sil</Text>
-            <Icon
-              name={'delete'}
-              color="red"
-              size={20}
-              style={styles.trash}></Icon>
-              </>)
-            : null}
+            {!isPinned ? (
+              <>
+                <Text style={[styles.option, {color: 'red'}]}>
+                  {t('long-press-delete-note')}
+                </Text>
+                <Icon
+                  name={'delete'}
+                  color="red"
+                  size={20}
+                  style={styles.trash}></Icon>
+              </>
+            ) : null}
           </View>
         </TouchableOpacity>
       </View>

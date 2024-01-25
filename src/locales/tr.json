@@ -1,0 +1,40 @@
+{
+    "header": "Notlar",
+    
+    "search-placeholder": "Arayın",
+
+    "table-view-prompt": "Galeri olarak görüntüle",
+    "list-view-prompt": "Liste olarak görüntüle",
+    "bulk-selection-prompt":"Notları seç",
+    "color-selection-prompt": "Renk seç",
+    "sort-by-prompt": "Şuna göre sırala",
+    "newest-first-prompt": "Önce en yeni",
+    "oldest-first-prompt": "Önce en eski",
+
+    "view-note-center-header": "Not",
+    "view-note-right-header": "Güncelle",
+
+    "write-note-center-header": "Not",
+    "write-note-right-header": "Ekle",
+    "write-note-input-placeholder": "Not...",
+
+
+    "long-press-share-note":"Notu Paylaş",
+    "long-press-delete-note":"Notu Sil",
+    "long-press-pin-note":"Notu Sabitle",
+    "long-press-unpin-note":"Sabitlemeden Kaldır",
+
+    "warn-empty-note": "Lütfen not giriniz",
+    "warn-bulk-selection":"Notları toplu şekilde silmek istediğinizden emin misiniz?",
+    "warn-bulk-selection-feedback": "Notlar silindi",
+    "warn-answer-yes": "Sil",
+    "warn-answer-no": "Vazgeç",
+    "warn-note-delete":"Notu silmek istediğinizden emin misiniz?",
+    "warn-note-updated-successfully":"Not başarıyla güncellendi",
+    "warn-pinnednote-delete":"Sabitlenmiş notlar silinemez",
+    "warn-bulkselekction-error":"Lütfen silmek istediğiniz notları seçin"
+
+
+
+
+}

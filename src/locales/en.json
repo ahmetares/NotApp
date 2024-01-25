@@ -1,0 +1,43 @@
+{
+    "header": "Notes",
+    
+    "search-placeholder": "Search",
+
+    "table-view-prompt": "Display as a gallery",
+    "list-view-prompt": "Display as a list",
+    "bulk-selection-prompt":"Bulk selection",
+    "color-selection-prompt": "Select color",
+    "sort-by-prompt": "Sort by",
+    "newest-first-prompt": "Newest first",
+    "oldest-first-prompt": "Oldest first",
+
+    "view-note-center-header": "Note",
+    "view-note-right-header": "Update",
+
+    "write-note-center-header": "Note",
+    "write-note-right-header": "Add",
+    "write-note-input-placeholder": "Note...",
+
+
+    "long-press-share-note":"Share",
+    "long-press-delete-note":"Delete",
+    "long-press-pin-note":"Pin",
+    "long-press-unpin-note":"Unpin",
+
+
+
+
+    "warn-empty-note": "Please enter a note",
+    "warn-bulk-selection":"Are you sure you want to delete notes in bulk?",
+    "warn-bulk-selection-feedback": "Notes deleted",
+    "warn-answer-yes": "Delete",
+    "warn-answer-no": "Cancel",
+    "warn-note-delete":"Are you sure you want to delete the note?",
+    "warn-note-updated-successfully":"Note updated successfully",
+    "warn-pinnednote-delete":"Pinned notes cannot be deleted",
+    "warn-bulkselekction-error":"Please select the notes you want to delete"
+
+
+
+
+}
