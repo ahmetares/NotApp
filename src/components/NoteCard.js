@@ -23,7 +23,7 @@ const deviceLanguage =
 
 function NoteCard({ message, onPress, bulkDelete, isPinned,theme='light' ,handleLongPress}) {
 
-    const dateLocaleLang = deviceLanguage.substring(0,2) == 'en' ? enUS : tr
+    const dateLocaleLang = deviceLanguage.substring(0, 2) == 'tr' ? tr : enUS;
 
     const dispatch = useDispatch()
 
