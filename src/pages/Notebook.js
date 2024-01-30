@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/AntDesign' // ekstra npm i --save-de
 import MCIIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import IONIcon from 'react-native-vector-icons/Ionicons'
 import { BlurView, VibrancyView } from "@react-native-community/blur";
+import InAppReview from 'react-native-in-app-review';
+import {useTranslation} from 'react-i18next';
 
 import IconButton from '../components/IconButton';
 import NoteCard from '../components/NoteCard';
@@ -20,27 +22,29 @@ import ColorPaletteModal from '../components/ColorPaletteModal';
 import store from '../store/store';
 import LongPressComponent from '../components/LongPressComponent';
 import LongPressModal from '../components/LongPressModal';
-import {useTranslation} from 'react-i18next';
+
 
 
 
 function Notes({ navigation }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+ // console.log('8%4: ', 4%8)
 
   const {t} = useTranslation();
 
+  const [isPinned, setPinned] = useState(false);
+  const [bulkDelete, setIsBulkDelete] = useState(false);
+  const [colorMode, setColorMode] = useState('light');
 
-  const [isPinned, setPinned] = useState(false)
-  const [bulkDelete, setIsBulkDelete] = useState(false)
-  const [colorMode, setColorMode] = useState('light')
+  const note = useSelector(state => state.notes.notes); //1 (pinsiz notlar)
+  const pinnedNotes = useSelector(state => state.notes.pinnedNotes); //2 (pinli notlar)
+  const allNotes = pinnedNotes.concat(note); //1+2 ( pinned note hep en üstte , pinned olmayanlarsa kendi kendine sortlandı)
+  const [list, setList] = useState(allNotes); //en son flatliste bunu verdik search bar ile uyumlu olması  için
 
-  const note = useSelector((state) => state.notes.notes)              //1 (pinsiz notlar)
-  const pinnedNotes = useSelector((state) => state.notes.pinnedNotes) //2 (pinli notlar)
-  const allNotes = pinnedNotes.concat(note)                          //1+2 ( pinned note hep en üstte , pinned olmayanlarsa kendi kendine sortlandı)
-  const [list, setList] = useState(allNotes)                          //en son flatliste bunu verdik search bar ile uyumlu olması  için        
-  
 
-  useEffect(() => {                                                   //store.subscribe ile herhangi değişiklikte yakaladık, başka türlü olmadı
+  useEffect(() => {
+    //store.subscribe ile herhangi değişiklikte yakaladık, başka türlü olmadı
     const unsubscribe = store.subscribe(() => {
       const note = store.getState().notes.notes;
       const pinnedNotes = store.getState().notes.pinnedNotes;
@@ -50,20 +54,28 @@ function Notes({ navigation }) {
     return unsubscribe;
   }, []);
 
-  
   //////////NAVIGATIONLAR////////////////
-  const navigateToWriter = () => { navigation.navigate('Notlar') }
+  const navigateToWriter = () => {
+    navigation.navigate('Notlar');
+  };
   const navigateToNote = (note, id, isPinned) => {
-    navigation.navigate('Not', { note, id, isPinned })
-  }
+    navigation.navigate('Not', {note, id, isPinned});
+  };
   const navigateToNoteFromModal = (note, id, isPinned) => {
-    setLongPressModal(false)
-    navigation.navigate('Not', { note, id, isPinned })
-  }
+    setLongPressModal(false);
+    navigation.navigate('Not', {note, id, isPinned});
+  };
+
+
+
+
+
+
+
 
 
   //////////NOTU SİLME////////////////
-  const handleDelete = (id) => {
+  const handleDelete = id => {
     Alert.alert(t('long-press-delete-note'), t('warn-note-delete'), [
       {
         text: t('warn-answer-no'),
@@ -77,45 +89,48 @@ function Notes({ navigation }) {
         },
       },
     ]);
-  }
+  };
   //////////SABİT NOTU SİLEMEME////////////////
   const handleUnDelete = () => {
     showMessage({
       message: t('warn-pinnednote-delete'),
       type: 'danger',
     });
-  }
+  };
 
   //////////NOT SABİTLEME////////////////
-  const handlePin = (id) => {
-    setPinned(!isPinned)
-    dispatch(pinNote(id))
-    setLongPressModal(false)
-  }
+  const handlePin = id => {
+    setPinned(!isPinned);
+    dispatch(pinNote(id));
+    setLongPressModal(false);
+  };
 
   //////////NOTU SABİTLEMEDEN ÇIKARMA////////////////
-  const handleUnPin = (id) => {
-    setPinned(!isPinned)
-    dispatch(unPinNote(id))
-    setLongPressModal(false)
-   // const index = allNotes.findIndex(x => x.id === item.id)
-  }
+  const handleUnPin = id => {
+    setPinned(!isPinned);
+    dispatch(unPinNote(id));
+    setLongPressModal(false);
+    // const index = allNotes.findIndex(x => x.id === item.id)
+  };
 
   //////////TOPLU SİLME MODUNU AÇMA (useEffect) ve REDUXSTATE'lerini Güncelleme////////////////
-  const bulkDeleteStatus = useSelector((state) => state.notLocalNotes.bulkDeleteStatus)
+  const bulkDeleteStatus = useSelector(
+    state => state.notLocalNotes.bulkDeleteStatus,
+  );
 
   const handleBulkDelete = () => {
-    dispatch(closeDrawer())  //drawer'i kapat
-    dispatch(handleBulkDeleteStatus())  //bulk status'unu tam tersi yap  
-  }
+    dispatch(closeDrawer()); //drawer'i kapat
+    dispatch(handleBulkDeleteStatus()); //bulk status'unu tam tersi yap
+  };
 
   useEffect(() => {
-    setIsBulkDelete(bulkDeleteStatus)  //bulk statusune göre usestate'deki bulkdelete modunu aç kapat - componentlerde bunu kullandık
-
-  }, [bulkDeleteStatus])
+    setIsBulkDelete(bulkDeleteStatus); //bulk statusune göre usestate'deki bulkdelete modunu aç kapat - componentlerde bunu kullandık
+  }, [bulkDeleteStatus]);
 
   //////////TOPLU SİLME///////////////////////////
-  const selectedBulkNotes = useSelector((state) => state.notLocalNotes.bulkDelete)  
+  const selectedBulkNotes = useSelector(
+    state => state.notLocalNotes.bulkDelete,
+  );
   //selectedBulkNotes'u NoteCard'dan içini doldurduk (popBulkDelete, pushBulkDelete)
 
   const confirmBulkDelete = () => {
@@ -124,9 +139,9 @@ function Notes({ navigation }) {
         message: t('warn-bulkselekction-error'),
         type: 'danger',
       });
-      return
+      return;
     }
-    Alert.alert(t("bulk-selection-prompt"), t("warn-bulk-selection"), [
+    Alert.alert(t('bulk-selection-prompt'), t('warn-bulk-selection'), [
       {
         text: t('warn-answer-no'),
         style: 'cancel',
@@ -136,238 +151,259 @@ function Notes({ navigation }) {
         onPress: () => {
           dispatch(deleteBulky(selectedBulkNotes));
           showMessage({
-            message: t("warn-bulk-selection-feedback"),
+            message: t('warn-bulk-selection-feedback'),
             type: 'danger',
           });
           handleBulkDelete(); //toplu silme işlemi bitince herşeyin kapanması için
         },
       },
     ]);
-  }
+  };
 
   //////////GECE GÜNDÜZ MODU///////////////////////////
 
-  const lightOrNightMode = useSelector((state) => state.notes.nightMode)
+  const lightOrNightMode = useSelector(state => state.notes.nightMode);
 
   useEffect(() => {
     if (!lightOrNightMode) {
-      setColorMode('light')
+      setColorMode('light');
     } else {
-      setColorMode('dark')
-
+      setColorMode('dark');
     }
-  }, [lightOrNightMode])
-
+  }, [lightOrNightMode]);
 
   //////////RENK SEÇME MODAL İŞLEMLERİ///////////////////////////
-  const colorModalStatus = useSelector((state) => state.notLocalNotes.isColorModalOpen)
+  const colorModalStatus = useSelector(
+    state => state.notLocalNotes.isColorModalOpen,
+  );
   const [isModalVisible, setModalVisible] = useState(false);
 
   const handleCloseModal = () => {
     setModalVisible(false);
-    dispatch(closeColorModal())  //colorModalStatus = false
+    dispatch(closeColorModal()); //colorModalStatus = false
   };
 
-  useEffect(()=> {
-    setModalVisible(colorModalStatus)  //useState'deki state'in açık olup olmaması Reduxtaki colorModalStatus'e göre değişir
-                                      //colorModalStatus Renkleri seç'e basınca true olur
-  },[colorModalStatus])               //colorModal drawer'dan geldiği için state kontrolünü redux üzerinden yaptık, longPressde Notebook üzerinden useState ile yaptık
+  useEffect(() => {
+    setModalVisible(colorModalStatus); //useState'deki state'in açık olup olmaması Reduxtaki colorModalStatus'e göre değişir
+    //colorModalStatus Renkleri seç'e basınca true olur
+  }, [colorModalStatus]); //colorModal drawer'dan geldiği için state kontrolünü redux üzerinden yaptık, longPressde Notebook üzerinden useState ile yaptık
 
-//////////////LONG PRESS MODAL İŞLEMLERi///////////////////
+  //////////////LONG PRESS MODAL İŞLEMLERi///////////////////
 
-const [longPressModal, setLongPressModal] = useState(false)
-const [longPressedNote, setLongPressedNote] = useState('')
-const [longPressedId, setLongPressedId] = useState(null)
-const [longPressedNotePinned, setLongPressedNotePinned] = useState(null)
+  const [longPressModal, setLongPressModal] = useState(false);
+  const [longPressedNote, setLongPressedNote] = useState('');
+  const [longPressedId, setLongPressedId] = useState(null);
+  const [longPressedNotePinned, setLongPressedNotePinned] = useState(null);
 
+  const handleLongPress = (note, id, isPinned) => {
+    setLongPressModal(true);
+    setLongPressedNote(note);
+    setLongPressedId(id);
+    setLongPressedNotePinned(isPinned);
+  };
 
-const handleLongPress = (note,id,isPinned) => {
-  setLongPressModal(true)
-  setLongPressedNote(note)
-  setLongPressedId(id)
-  setLongPressedNotePinned(isPinned)
-}
-
-const handleCloseLongPressModal = () => {
-  setLongPressModal(false)
-  setLongPressedNote('')
-  setLongPressedId(null)
-  setLongPressedNotePinned(null)
-}
+  const handleCloseLongPressModal = () => {
+    setLongPressModal(false);
+    setLongPressedNote('');
+    setLongPressedId(null);
+    setLongPressedNotePinned(null);
+  };
 
   //////////SEARCH İŞLEMLERİ///////////////////////////
 
-    const handleSearchBar = text => {
-      const filteredList = allNotes.filter(note => {
+  const handleSearchBar = text => {
+    const filteredList = allNotes.filter(note => {
+      const searchedText = text.toLowerCase();
+      const currentTitle = note.note.toLowerCase(); //searchbar ve notlar ın ikisinide küçük harf yaptık
+      return currentTitle.indexOf(searchedText) > -1;
+      //mesela currentTitle = ABC  searchedText = F    -1 döner  ama searchedText = C  2 döner
+    });
 
-        const searchedText = text.toLowerCase()
-        const currentTitle = note.note.toLowerCase()  //searchbar ve notlar ın ikisinide küçük harf yaptık
-        return currentTitle.indexOf(searchedText) > -1   
-        //mesela currentTitle = ABC  searchedText = F    -1 döner  ama searchedText = C  2 döner
-        })
-
-        setList(filteredList)
-
-    }
+    setList(filteredList);
+  };
 
   ////////////SHARE ///////////////////
-  const  onShare = async (note) => {
+  const onShare = async note => {
     try {
       const result = await Share.share({
-        message:note      
+        message: note,
       });
-      
-  }
-  catch(error) {
+    } catch (error) {
       Alert.alert(error.message);
-  }
-}
+    }
+  };
 
-
-
-////////////////////STATE KONTROLÜ//////////////////////////////////
-  const states = useSelector((state) => state.notes)
-  const states2 = useSelector((state) => state.notLocalNotes)
-
+  ////////////////////STATE KONTROLÜ//////////////////////////////////
+  const states = useSelector(state => state.notes);
+  const states2 = useSelector(state => state.notLocalNotes);
 
   useEffect(() => {
     //console.log('stateler bunlar:' , states)
-   // console.log('nonLocalstateler bunlar:', states2)
+    // console.log('nonLocalstateler bunlar:', states2)
+  }, [states2]);
 
-  }, [states2])
-
-
-
-
-///////////////////////////////////////////////////////
-  const drawerMenu = useSelector((state) => state.notLocalNotes.isDrawerOpen)
-  const isListView = useSelector((state) => state.notes.listView) //galeriView'e göre swipelist yada flatlist (sütunlu) halini render ettik 
-                                                                        //flatlistte kaydırma işlemleri yok
+  ///////////////////////////////////////////////////////
+  const drawerMenu = useSelector(state => state.notLocalNotes.isDrawerOpen);
+  const isListView = useSelector(state => state.notes.listView); //galeriView'e göre swipelist yada flatlist (sütunlu) halini render ettik
+  //flatlistte kaydırma işlemleri yok
   return (
     <>
       <View style={styles[colorMode].container}>
-      
+        {drawerMenu ? (
+          <DrawerMenu handleBulkSelection={handleBulkDelete} />
+        ) : null}
 
-        {drawerMenu ? <DrawerMenu handleBulkSelection={handleBulkDelete} /> : null}
+        {drawerMenu ? ( //DRAWER DIŞINA TIKLANINCA KAPATMA FONKSİYONU
+          <TouchableWithoutFeedback onPress={() => dispatch(closeDrawer())}>
+            <View
+              style={[StyleSheet.absoluteFillObject, {flex: 1, zIndex: 1}]}
+            />
+          </TouchableWithoutFeedback>
+        ) : null}
 
-        {drawerMenu ?    //DRAWER DIŞINA TIKLANINCA KAPATMA FONKSİYONU
-          <TouchableWithoutFeedback onPress={() => dispatch(closeDrawer())} >
-            <View style={[StyleSheet.absoluteFillObject, { flex: 1, zIndex: 1 }]} />
-          </TouchableWithoutFeedback> : null}
-          
-        {isListView ?   (
-          <SwipeListView 
-          data={list}
-      
-          renderItem={({ item }) => 
-          <NoteCard 
-          message={item} 
-          bulkDelete={bulkDelete} 
-          isPinned={item.isPinned} 
-          theme={colorMode} 
-          handleLongPress={() => handleLongPress(item.note,item.id,item.isPinned)} 
-          onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
-      
-          ListHeaderComponent={<Header onText={handleSearchBar}/>}
-          
-          keyExtractor={list => list.id}
-          
-          renderHiddenItem={(data, rowMap) => (
-            <View style={styles[colorMode].rowBack}>
-              {
-                data.item.isPinned == false ?     //DELETE ICON - ACCORDING TO PIN STATUS
+        {isListView ? (
+          <SwipeListView
+            data={list}
+            renderItem={({item}) => (
+              <NoteCard
+                message={item}
+                bulkDelete={bulkDelete}
+                isPinned={item.isPinned}
+                theme={colorMode}
+                handleLongPress={() =>
+                  handleLongPress(item.note, item.id, item.isPinned)
+                }
+                onPress={() =>
+                  navigateToNote(item.note, item.id, item.isPinned)
+                }
+              />
+            )}
+            ListHeaderComponent={<Header onText={handleSearchBar} />}
+            keyExtractor={list => list.id}
+            renderHiddenItem={(data, rowMap) => (
+              <View style={styles[colorMode].rowBack}>
+                {data.item.isPinned == false ? ( //DELETE ICON - ACCORDING TO PIN STATUS
                   <Icon
-                    onPress={() => handleDelete( data.item.id)}
-                    name={'delete'} color='white' size={30} style={styles[colorMode].trash}
-                  >
-                  </Icon>
-                  :
+                    onPress={() => handleDelete(data.item.id)}
+                    name={'delete'}
+                    color="white"
+                    size={30}
+                    style={styles[colorMode].trash}></Icon>
+                ) : (
                   <IONIcon
                     onPress={() => handleUnDelete(data.item.id)}
-                    name={'trash-bin'} color='white' size={30} style={[styles[colorMode].trash, { backgroundColor: 'black' }]}
-                  >
-                  </IONIcon>
-              }
-      
-              {
-                data.item.isPinned == false ?    //PIN ICON - ACCORDING TO PIN STATUS
+                    name={'trash-bin'}
+                    color="white"
+                    size={30}
+                    style={[
+                      styles[colorMode].trash,
+                      {backgroundColor: 'black'},
+                    ]}></IONIcon>
+                )}
+
+                {data.item.isPinned == false ? ( //PIN ICON - ACCORDING TO PIN STATUS
                   <MCIIcon
                     onPress={() => handlePin(data.item.id)}
-                    name={'pin'} color='white' size={30} style={styles[colorMode].pin}
-                  >
-                  </MCIIcon>
-                  :
+                    name={'pin'}
+                    color="white"
+                    size={30}
+                    style={styles[colorMode].pin}></MCIIcon>
+                ) : (
                   <MCIIcon
-                    onPress={() => handleUnPin( data.item.id)}
-                    name={'pin-off'} color='white' size={30} style={styles[colorMode].pin}
-                  >
-                  </MCIIcon>
-              }
-      
-              <IONIcon onPress={() => onShare(data.item.note)}
-              name={'share-outline'} color='white' size={30} style={styles[colorMode].share}>
-                
-              </IONIcon>
-            </View>
-          )}
-          closeOnRowBeginSwipe
-          closeOnRowOpen
-          leftOpenValue={110}
-          rightOpenValue={-60}
-        
+                    onPress={() => handleUnPin(data.item.id)}
+                    name={'pin-off'}
+                    color="white"
+                    size={30}
+                    style={styles[colorMode].pin}></MCIIcon>
+                )}
+
+                <IONIcon
+                  onPress={() => onShare(data.item.note)}
+                  name={'share-outline'}
+                  color="white"
+                  size={30}
+                  style={styles[colorMode].share}></IONIcon>
+              </View>
+            )}
+            closeOnRowBeginSwipe
+            closeOnRowOpen
+            leftOpenValue={110}
+            rightOpenValue={-60}
           />
-        ) : 
-        (
-          <FlatList 
-          data={list} 
-          renderItem={({ item }) => 
-          <NoteCard 
-          message={item} 
-          bulkDelete={bulkDelete} 
-          isPinned={item.isPinned} 
-          theme={colorMode} 
-          handleLongPress={() => handleLongPress(item.note,item.id,item.isPinned)} 
-          onPress={() => navigateToNote(item.note, item.id, item.isPinned)} />}
-          numColumns={2}
-          keyExtractor={item => item.id.toString()}
-          ListHeaderComponent={<Header onText={handleSearchBar}/>}
-
+        ) : (
+          <FlatList
+            data={list}
+            renderItem={({item}) => (
+              <NoteCard
+                message={item}
+                bulkDelete={bulkDelete}
+                isPinned={item.isPinned}
+                theme={colorMode}
+                handleLongPress={() =>
+                  handleLongPress(item.note, item.id, item.isPinned)
+                }
+                onPress={() =>
+                  navigateToNote(item.note, item.id, item.isPinned)
+                }
+              />
+            )}
+            numColumns={2}
+            keyExtractor={item => item.id.toString()}
+            ListHeaderComponent={<Header onText={handleSearchBar} />}
           />
-        )      
-        }
+        )}
 
-        <ColorPaletteModal visible={isModalVisible} onClose={handleCloseModal} />
-
-        {longPressModal && <BlurView  blurAmount={4}  blurType="light" style={{position:'absolute', left:0,right:0,top:0,bottom:0}}  />}
-
-        <LongPressModal 
-        visible= {longPressModal}
-        onClose = {handleCloseLongPressModal}
-        note={longPressedNote}
-        isPinned={longPressedNotePinned}
-        navigateToNote={()=> navigateToNoteFromModal(longPressedNote,longPressedId,longPressedNotePinned)}
-        pinFromModal = {longPressedNotePinned ? ()=> handleUnPin(longPressedId) : ()=> handlePin(longPressedId)}
-        deleteFromModal = {() => handleDelete(longPressedId)}
-        shareFromModal={() => onShare(longPressedNote)}
+        <ColorPaletteModal
+          visible={isModalVisible}
+          onClose={handleCloseModal}
         />
 
-        {!bulkDelete ?            //PLUS or BULK DELETE BUTTON
-          <IconButton icon={'plus'}
-            color={'white'}
-            style={{ backgroundColor: '#d7ac2a' }}
-            onPress={navigateToWriter} />
-          :
-          <IconButton icon={'delete'}
-            color={'white'}
-            style={{ backgroundColor: 'red' }}
-            onPress={confirmBulkDelete} />}
+        {longPressModal && (
+          <BlurView
+            blurAmount={4}
+            blurType="light"
+            style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}
+          />
+        )}
 
+        <LongPressModal
+          visible={longPressModal}
+          onClose={handleCloseLongPressModal}
+          note={longPressedNote}
+          isPinned={longPressedNotePinned}
+          navigateToNote={() =>
+            navigateToNoteFromModal(
+              longPressedNote,
+              longPressedId,
+              longPressedNotePinned,
+            )
+          }
+          pinFromModal={
+            longPressedNotePinned
+              ? () => handleUnPin(longPressedId)
+              : () => handlePin(longPressedId)
+          }
+          deleteFromModal={() => handleDelete(longPressedId)}
+          shareFromModal={() => onShare(longPressedNote)}
+        />
+
+        {!bulkDelete ? ( //PLUS or BULK DELETE BUTTON
+          <IconButton
+            icon={'plus'}
+            color={'white'}
+            style={{backgroundColor: '#d7ac2a'}}
+            onPress={navigateToWriter}
+          />
+        ) : (
+          <IconButton
+            icon={'delete'}
+            color={'white'}
+            style={{backgroundColor: 'red'}}
+            onPress={confirmBulkDelete}
+          />
+        )}
       </View>
-
-
-
     </>
-
   );
 }
 
